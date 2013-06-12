@@ -1,0 +1,36 @@
+{
+	"name": "drahak/oauth2",
+	"type": "library",
+	"description": "Nette OAuth2 Provider bundle",
+	"keywords": ["nette", "OAuth2", "provider", "server", "drahak"],
+	"homepage": "http://www.drahak.eu",
+	"license": ["BSD-3-Clause", "GPL-2.0", "GPL-3.0"],
+	"authors": [
+		{
+			"name": "Drahomír Hanák",
+			"homepage": "http://www.drahak.eu"
+		}
+	],
+	"config": {
+		"vendor-dir": "libs"
+	},
+	"require": {
+		"php": ">= 5.3.0",
+
+		"nette/nette": "@dev"
+	},
+	"require-dev": {
+		"nette/tester": "dev-master",
+		"janmarek/mockista": "dev-master"
+	},
+	"autoload": {
+		"psr-0": {
+			"Drahak\\OAuth2": "src/"
+		},
+		"classmap": [
+			"src/Drahak/OAuth2/exceptions.php",
+			"src/Drahak/OAuth2/Grant/exceptions.php",
+			"src/Drahak/OAuth2/Token/exceptions.php"
+		]
+	}
+}

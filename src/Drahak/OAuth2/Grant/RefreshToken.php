@@ -1,0 +1,58 @@
+<?php
+namespace Drahak\OAuth2\Grant;
+
+use Drahak\OAuth2\Token\InvalidRefreshTokenException;
+use Drahak\OAuth2\Token\IToken;
+
+/**
+ * RefreshToken
+ * @package Drahak\OAuth2\Grant
+ * @author Drahomír Hanák
+ */
+class RefreshToken extends GrantType
+{
+	/**
+	 * Get refresh token identifier
+	 * @return string
+	 */
+	public function getIdentifier()
+	{
+		return self::REFRESH_TOKEN;
+	}
+
+	/**
+	 * Verify request
+	 *
+	 * @throws InvalidRefreshTokenException
+	 */
+	protected function verifyRequest()
+	{
+		$refreshTokenStorage = $this->token->getToken(IToken::REFRESH_TOKEN);
+		$refreshToken = $this->input->getParameter('refresh_token');
+
+		$refreshTokenStorage->getEntity($refreshToken);
+		$refreshTokenStorage->getStorage()->remove($refreshToken);
+	}
+
+	/**
+	 * Generate access token
+	 * @return string
+	 */
+	protected function generateAccessToken()
+	{
+		$accessTokenStorage = $this->token->getToken(IToken::ACCESS_TOKEN);
+		$refreshTokenStorage = $this->token->getToken(IToken::REFRESH_TOKEN);
+
+		$accessToken = $accessTokenStorage->create($this->getClient(), $this->user->getId());
+		$refreshToken = $refreshTokenStorage->create($this->getClient(), $this->user->getId());
+
+		return array(
+			'access_token' => $accessToken->getAccessToken(),
+			'token_type' => 'bearer',
+			'expires_in' => $accessTokenStorage->getLifetime(),
+			'refresh_token' => $refreshToken->getRefreshToken()
+		);
+	}
+
+
+}
