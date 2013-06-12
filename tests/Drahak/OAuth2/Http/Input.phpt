@@ -51,5 +51,17 @@ class InputTest extends TestCase
 		Assert::equal($input, $params);
 	}
 
+	public function testGetAccessToken()
+	{
+		$token = '546ad8fs8bd18be8tj48ku8yl418uo4vs81515';
+		$this->request->expects('getHeader')
+			->once()
+			->with('Authorization')
+			->andReturn('Bearer ' . $token);
+
+		$accessToken = $this->input->getAuthorization();
+		Assert::equal($accessToken, $token);
+	}
+
 }
 \run(new InputTest());
