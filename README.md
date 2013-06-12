@@ -175,3 +175,73 @@ In case or error, redirects to:
 ```
 //redirect_uri/#error=unauthorized_client&error_description=Client+is+not+found
 ```
+
+### Password
+Is used for trusted (usually first-party) applications, where you completely trust client because you generate access token from real user credentials (username, password)
+
+##### Request for access token:
+
+```
+POST //oauth.presenter.url/token
+	grant_type=password
+	&username=USERNAME
+	&password=PASSWORD
+	&client_id=CLIENT_ID
+```
+
+- [REQUIRED] **grant_type** - Password grant type uses identifier (so unexpectedly) `password`
+- [REQUIRED] **client_id** - client ID (e.g. application) that requests for access token
+- [REQUIRED] **username** - real user's username
+- [OPTIONAL] **password** - real user's password
+
+##### Access token response
+```
+{
+	"access_token": "AnlSCIWYbchsCc5sdc5ac4caca8a2",
+	"token_type": "bearer",
+	"expires_in": 3600,
+	"refresh_token": "DS6SA512ADCVa51adc54VDS51VD5"
+}
+```
+
+In case or error:
+```
+{
+	"error": "invalid_request",
+	"error_description": "Invalid authorization code"
+}
+```
+
+### Client credentials (working draft)
+If application needs to get access token for their own account outside the context of any specific user this is probably the best way.
+
+##### Request for access token:
+
+```
+POST //oauth.presenter.url/token
+	grant_type=client_credentials
+	&client_id=CLIENT_ID
+	&client_SECRET=CLIENT_SECRET
+```
+
+- [REQUIRED] **grant_type** - Password grant type uses identifier (so unexpectedly) `password`
+- [REQUIRED] **client_id** - client ID (e.g. application) that requests for access token
+- [REQUIRED] **client_secret** - client (e.g. application) secret key that requests for access token
+
+##### Access token response
+```
+{
+	"access_token": "AnlSCIWYbchsCc5sdc5ac4caca8a2",
+	"token_type": "bearer",
+	"expires_in": 3600,
+	"refresh_token": "DS6SA512ADCVa51adc54VDS51VD5"
+}
+```
+
+In case or error:
+```
+{
+	"error": "invalid_request",
+	"error_description": "Invalid authorization code"
+}
+```
