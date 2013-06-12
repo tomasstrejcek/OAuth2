@@ -93,7 +93,8 @@ Grant types
 -----------
 Are determined by `grant_type` parameter. There is support of base grant types as defined in OAuth2 specification: Authorization Code, Implicit, Password, Client Credentials and Refresh token.
 
-### Authorization code
+1. Authorization code
+-----------
 This grant type is great for third-party applications which can secure client secret code.
 
 To generate access token, you'll need to get authorization code first. You can obtain it from `IOAuthPresenter` by calling `issueAuthorizationCode`
@@ -107,6 +108,8 @@ GET //oauth.presenter.url/authorize?response_type=code&client_id=CLIENT_ID&redir
 - [REQUIRED] **redirect_uri** - URL address whereto redirect in case of success or error
 - [OPTIONAL] **scope** -  specify the scope of access request
 
+
+##### Authorization code response:
 In any case (error or success) Resource owner redirects back to the client using `redirect_uri` with authorization code as a query parameter:
 ```
 //redirect_uri/?code=AnlSCIWYbchsCc5sdc5ac4caca8a2
@@ -151,7 +154,8 @@ In case or error, provides JSON response:
 }
 ```
 
-### Implicit
+2. Implicit
+--------
 Is used for browser-based (web) or mobile applications, where you can't secure client secret so yopu can't use it to obtain access token.
 
 ##### Request for access token:
@@ -176,7 +180,8 @@ In case or error, redirects to:
 //redirect_uri/#error=unauthorized_client&error_description=Client+is+not+found
 ```
 
-### Password
+3. Password
+-----------
 Is used for trusted (usually first-party) applications, where you completely trust client because you generate access token from real user credentials (username, password)
 
 ##### Request for access token:
@@ -212,7 +217,8 @@ In case or error:
 }
 ```
 
-### Client credentials (working draft)
+4. Client credentials (working draft)
+------------------------------------
 If application needs to get access token for their own account outside the context of any specific user this is probably the best way.
 
 ##### Request for access token:
@@ -243,5 +249,40 @@ In case or error:
 {
 	"error": "invalid_request",
 	"error_description": "Invalid authorization code"
+}
+```
+
+5. Refresh token
+---------------
+Is used to restore (actually re-generate) access token without authentication process. Refresh token is provided with almost every grant type (excluding Implicit).
+
+##### Request for refresh token:
+
+```
+POST //oauth.presenter.url/token
+	grant_type=refresh_token
+	&refresh_token=DS6SA512ADCVa51adc54VDS51VD5
+	&client_id=CLIENT_ID
+```
+
+- [REQUIRED] **grant_type** - Refresh token identifier
+- [REQUIRED] **refresh_token** - refresh token itself, that you got from almost any access token
+- [REQUIRED] **client_id** - client ID (e.g. application) that requests for access token
+
+##### Access token response
+```
+{
+	"access_token": "AnlSCIWYbchsCc5sdc5ac4caca8a2",
+	"token_type": "bearer",
+	"expires_in": 3600,
+	"refresh_token": "DS6SA512ADCVa51adc54VDS51VD5"
+}
+```
+
+In case or error:
+```
+{
+	"error": "invalid_request",
+	"error_description": "Invalid refresh token"
 }
 ```
