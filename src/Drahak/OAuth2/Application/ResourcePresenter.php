@@ -47,7 +47,7 @@ abstract class ResourcePresenter extends Presenter implements IResourcePresenter
 	public function checkRequirements($element)
 	{
 		parent::checkRequirements($element);
-		$accessToken = $this->input->getParameter('access_token');
+		$accessToken = $this->input->getAuthorization();
 		if (!$accessToken) {
 			throw new ForbiddenRequestException('Access token not provided');
 		}

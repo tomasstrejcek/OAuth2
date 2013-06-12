@@ -22,4 +22,10 @@ interface IInput
 	 */
 	public function getParameter($name);
 
+	/**
+	 * Get authorization token
+	 * @return string
+	 */
+	public function getAuthorization();
+
 }

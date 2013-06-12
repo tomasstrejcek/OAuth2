@@ -53,6 +53,17 @@ class Input extends Object implements IInput
 	}
 
 	/**
+	 * Get authorization token from header - Authorization: Bearer
+	 * @return string
+	 */
+	public function getAuthorization()
+	{
+		$authorization = explode(' ', $this->request->getHeader('Authorization'));
+		return isset($authorization[1]) ? $authorization[1] : NULL;
+	}
+
+
+	/**
 	 * Convert client request data to array or traversable
 	 * @param string $data
 	 * @return array
