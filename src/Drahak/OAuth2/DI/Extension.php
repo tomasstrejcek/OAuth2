@@ -52,13 +52,16 @@ class Extension extends CompilerExtension
 			->setClass('Drahak\OAuth2\Grant\Password');
 		$container->addDefinition($this->prefix('implicitGrant'))
 			->setClass('Drahak\OAuth2\Grant\Implicit');
+		$container->addDefinition($this->prefix('clientCredentialsGrant'))
+			->setClass('Drahak\OAuth2\Grant\ClientCredentials');
 
 		$container->addDefinition($this->prefix('grantContext'))
 			->setClass('Drahak\OAuth2\Grant\GrantContext')
 			->addSetup('$service->addGrantType(?)', array($this->prefix('@authorizationCodeGrant')))
 			->addSetup('$service->addGrantType(?)', array($this->prefix('@refreshTokenGrant')))
 			->addSetup('$service->addGrantType(?)', array($this->prefix('@passwordGrant')))
-			->addSetup('$service->addGrantType(?)', array($this->prefix('@implicitGrant')));
+			->addSetup('$service->addGrantType(?)', array($this->prefix('@implicitGrant')))
+			->addSetup('$service->addGrantType(?)', array($this->prefix('@clientCredentialsGrant')));
 
 		// Tokens
 		$container->addDefinition($this->prefix('accessToken'))
