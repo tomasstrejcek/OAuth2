@@ -46,7 +46,7 @@ CREATE TABLE oauth_access_token (
 
 -- Authorization code storage table
 CREATE TABLE oauth_authorization_code (
-  authorization_code CHAR(60) NOT NULL,
+  authorization_code CHAR(64) NOT NULL,
   client_id BINARY(16) NOT NULL,
   user_id BINARY(16) NOT NULL,
   expires DATETIME NOT NULL,
@@ -86,7 +86,7 @@ CREATE TABLE oauth_authorization_code_scope (
   scope_name VARCHAR(80) NOT NULL,
   PRIMARY KEY (id),
   KEY authorization_code (authorization_code),
-  KEY scope_name (scope_name),
+KEY scope_name (scope_name),
   FOREIGN KEY (authorization_code) REFERENCES oauth_authorization_code (authorization_code)
     ON DELETE CASCADE,
   FOREIGN KEY (scope_name) REFERENCES oauth_scope (name)
