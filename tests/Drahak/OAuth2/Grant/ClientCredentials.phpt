@@ -59,10 +59,9 @@ class ClientCredentialsTest extends GrantTestCase
 
 		$this->client->expects('getClient')->once()->andReturn($this->clientEntity);
 
-		$this->user->expects('getId')->atLeastOnce()->andReturn(1);
-		$this->accessToken->expects('create')->once()->with($this->clientEntity, 1, array())->andReturn($this->accessTokenEntity);
+		$this->accessToken->expects('create')->once()->with($this->clientEntity, NULL, array())->andReturn($this->accessTokenEntity);
 		$this->accessToken->expects('getLifetime')->once()->andReturn($lifetime);
-		$this->refreshToken->expects('create')->once()->with($this->clientEntity, 1, array())->andReturn($this->refreshTokenEntity);
+		$this->refreshToken->expects('create')->once()->with($this->clientEntity, NULL, array())->andReturn($this->refreshTokenEntity);
 
 		$this->accessTokenEntity->expects('getAccessToken')->once()->andReturn($access);
 		$this->refreshTokenEntity->expects('getRefreshToken')->once()->andReturn($refresh);

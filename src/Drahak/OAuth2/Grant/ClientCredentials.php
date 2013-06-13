@@ -32,8 +32,8 @@ class ClientCredentials extends GrantType
 		$accessTokenStorage = $this->token->getToken(IToken::ACCESS_TOKEN);
 		$refreshTokenStorage = $this->token->getToken(IToken::REFRESH_TOKEN);
 
-		$accessToken = $accessTokenStorage->create($client, $this->user->getId(), $this->getScope());
-		$refreshToken = $refreshTokenStorage->create($client, $this->user->getId(), $this->getScope());
+		$accessToken = $accessTokenStorage->create($client, NULL, $this->getScope());
+		$refreshToken = $refreshTokenStorage->create($client, NULL, $this->getScope());
 
 		return array(
 			'access_token' => $accessToken->getAccessToken(),
