@@ -3,12 +3,6 @@ namespace Drahak\OAuth2\DI;
 
 use Nette\Configurator;
 use Nette\DI\CompilerExtension;
-use Nette\PhpGenerator\PhpLiteral;
-
-// Support newer Nette version
-if (class_exists('Nette\DI\CompilerExtension')) {
-	class_alias('Nette\DI\CompilerExtension', 'Nette\Config\CompilerExtension');
-}
 
 /**
  * OAuth2 compiler extension
@@ -80,7 +74,7 @@ class Extension extends CompilerExtension
 			->addSetup('$service->addToken(?)', array($this->prefix('@refreshToken')))
 			->addSetup('$service->addToken(?)', array($this->prefix('@authorizationCode')));
 
-		// Storage
+		// Nette database Storage
 		$container->addDefinition($this->prefix('accessTokenStorage'))
 			->setClass('Drahak\OAuth2\Storage\NDB\AccessTokenStorage');
 		$container->addDefinition($this->prefix('refreshTokenStorage'))

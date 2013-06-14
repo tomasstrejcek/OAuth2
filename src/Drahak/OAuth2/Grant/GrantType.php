@@ -105,13 +105,18 @@ abstract class GrantType extends Object implements IGrant
 
 	/**
 	 * Verify grant type
-	 * @throws InvalidStateException
+	 * @throws UnauthorizedClientException
 	 * @throws InvalidGrantTypeException
 	 */
 	protected function verifyGrantType()
 	{
-		if (!$this->input->getParameter(self::GRANT_TYPE_KEY)) {
+		$grantType = $this->input->getParameter(self::GRANT_TYPE_KEY);
+		if (!$grantType) {
 			throw new InvalidGrantTypeException;
+		}
+
+		if (!$this->clientStorage->canUseGrantType($this->getClient()->getId(), $grantType)) {
+			throw new UnauthorizedClientException;
 		}
 	}
 

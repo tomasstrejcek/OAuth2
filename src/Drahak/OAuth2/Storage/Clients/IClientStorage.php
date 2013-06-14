@@ -17,4 +17,12 @@ interface IClientStorage
 	 */
 	public function getClient($clientId, $clientSecret = NULL);
 
+	/**
+	 * Can client use given grant type
+	 * @param string $clientId
+	 * @param string $grantType
+	 * @return bool
+	 */
+	public function canUseGrantType($clientId, $grantType);
+
 }

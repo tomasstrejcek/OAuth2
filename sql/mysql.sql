@@ -19,6 +19,44 @@ CREATE TABLE oauth_scope (
   PRIMARY KEY (name)
 );
 
+-- Client roles
+CREATE TABLE oauth_grant (
+  id INT(11) NOT NULL AUTO_INCREMENT,
+  name VARCHAR(80) NOT NULL,
+  description VARCHAR(255) NOT NULL,
+  PRIMARY KEY (id)
+);
+
+-- Base client roles
+INSERT INTO oauth_grant (id, name, description) VALUES
+(1,	'authorization_code',	'Allows to use authroization code grant type'),
+(2,	'implicit',	'Allows to use implicit grant type'),
+(3,	'password',	'Allows to use password grant type'),
+(4,	'refresh_token',	'Allows to use refresh token grant type'),
+(5,	'client_credentials',	'Allows to use client credentials grant type');
+
+-- Client grant connect table
+CREATE TABLE oauth_client_grant (
+  id INT(11) NOT NULL AUTO_INCREMENT,
+  client_id BINARY(16) NOT NULL,
+  role_id INT(11) NOT NULL,
+  PRIMARY KEY (id),
+  KEY client_id (client_id),
+  KEY role_id (role_id),
+  FOREIGN KEY (client_id) REFERENCES oauth_client (id)
+    ON DELETE CASCADE,
+  FOREIGN KEY (role_id) REFERENCES oauth_role (id)
+    ON DELETE CASCADE
+);
+
+-- Allow default client to use everything
+INSERT INTO oauth_client_grant (id, client_id, role_id) VALUES
+(1,	'd3a213ad-d142-11',	1),
+(2,	'd3a213ad-d142-11',	2),
+(3,	'd3a213ad-d142-11',	3),
+(4,	'd3a213ad-d142-11',	4),
+(5,	'd3a213ad-d142-11',	5);
+
 -- Sample user table
 CREATE TABLE oauth_user (
   id BINARY(16) NOT NULL COMMENT 'UUID',

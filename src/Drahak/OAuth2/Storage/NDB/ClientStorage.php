@@ -5,6 +5,7 @@ use Drahak\OAuth2\Storage\Clients\IClientStorage;
 use Drahak\OAuth2\Storage\Clients\IClient;
 use Drahak\OAuth2\Storage\Clients\Client;
 use Nette\Database\SelectionFactory;
+use Nette\Database\Table\ActiveRow;
 use Nette\Object;
 
 /**
@@ -51,5 +52,20 @@ class ClientStorage extends Object implements IClientStorage
 		return new Client($data['id'], $data['secret'], $data['redirect_url']);
 	}
 
-
+	/**
+	 * Can client use given grant type
+	 * @param string $clientId
+	 * @param string $grantType
+	 * @return bool
+	 */
+	public function canUseGrantType($clientId, $grantType)
+	{
+		$result = $this->getTable()->getConnection()->query('
+			SELECT name
+			FROM oauth_client_role
+			RIGHT JOIN oauth_role AS r ON role_id = r.id AND name = ?
+			WHERE client_id = ?
+		', $grantType, $clientId);
+		return (bool)$result->fetch();
+	}
 }
