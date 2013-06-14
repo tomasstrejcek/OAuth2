@@ -53,5 +53,28 @@ class ClientStorageTest extends TestCase
 		Assert::equal($client->getRedirectUrl(), $rowData['redirect_url']);
     }
 
+	public function testAllowClientToUseGrantType()
+	{
+		$selection = $this->mockista->create('Nette\Database\Table\Selection');
+		$connection = $this->mockista->create('Nette\Database\Connection');
+
+		$this->selectionFactory->expects('table')
+			->once()
+			->andReturn($selection);
+
+		$selection->expects('getConnection')->andReturn($connection);
+
+		$connection->expects('query')
+			->once()
+			->andReturn($selection);
+
+		$selection->expects('fetch')
+			->once()
+			->andReturn(array('result' => 'set'));
+
+		$result = $this->storage->canUseGrantType(1, 'test_credentials');
+		Assert::true($result);
+	}
+
 }
 \run(new ClientStorageTest());
