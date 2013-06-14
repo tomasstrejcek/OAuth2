@@ -75,14 +75,16 @@ class Extension extends CompilerExtension
 			->addSetup('$service->addToken(?)', array($this->prefix('@authorizationCode')));
 
 		// Nette database Storage
-		$container->addDefinition($this->prefix('accessTokenStorage'))
-			->setClass('Drahak\OAuth2\Storage\NDB\AccessTokenStorage');
-		$container->addDefinition($this->prefix('refreshTokenStorage'))
-			->setClass('Drahak\OAuth2\Storage\NDB\RefreshTokenStorage');
-		$container->addDefinition($this->prefix('authorizationCodeStorage'))
-			->setClass('Drahak\OAuth2\Storage\NDB\AuthorizationCodeStorage');
-		$container->addDefinition($this->prefix('clientStorage'))
-			->setClass('Drahak\OAuth2\Storage\NDB\ClientStorage');
+		if ($container->getByType('Nette\Database\SelectionFactory')) {
+			$container->addDefinition($this->prefix('accessTokenStorage'))
+				->setClass('Drahak\OAuth2\Storage\NDB\AccessTokenStorage');
+			$container->addDefinition($this->prefix('refreshTokenStorage'))
+				->setClass('Drahak\OAuth2\Storage\NDB\RefreshTokenStorage');
+			$container->addDefinition($this->prefix('authorizationCodeStorage'))
+				->setClass('Drahak\OAuth2\Storage\NDB\AuthorizationCodeStorage');
+			$container->addDefinition($this->prefix('clientStorage'))
+				->setClass('Drahak\OAuth2\Storage\NDB\ClientStorage');
+		}
 	}
 
 	/**
