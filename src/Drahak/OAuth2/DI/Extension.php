@@ -3,6 +3,8 @@ namespace Drahak\OAuth2\DI;
 
 use Nette\Configurator;
 use Nette\DI\CompilerExtension;
+use Nette\DI\ContainerBuilder;
+use Nette\DI\ServiceDefinition;
 
 /**
  * OAuth2 compiler extension
@@ -17,7 +19,7 @@ class Extension extends CompilerExtension
 	 * @var array
 	 */
 	protected $defaults = array(
-		'access;TokenLifetime' => 3600, // 1 hour
+		'accessTokenLifetime' => 3600, // 1 hour
 		'refreshTokenLifetime' => 36000, // 10 hours
 		'authorizationCodeLifetime' => 360 // 6 minutes
 	);
@@ -75,7 +77,7 @@ class Extension extends CompilerExtension
 			->addSetup('$service->addToken(?)', array($this->prefix('@authorizationCode')));
 
 		// Nette database Storage
-		if ($container->getByType('Nette\Database\SelectionFactory')) {
+		if ($this->getByType($container, 'Nette\Database\SelectionFactory')) {
 			$container->addDefinition($this->prefix('accessTokenStorage'))
 				->setClass('Drahak\OAuth2\Storage\NDB\AccessTokenStorage');
 			$container->addDefinition($this->prefix('refreshTokenStorage'))
@@ -85,6 +87,22 @@ class Extension extends CompilerExtension
 			$container->addDefinition($this->prefix('clientStorage'))
 				->setClass('Drahak\OAuth2\Storage\NDB\ClientStorage');
 		}
+	}
+
+	/**
+	 * @param ContainerBuilder $container
+	 * @param string $type
+	 * @return ServiceDefinition|null
+	 */
+	private function getByType(ContainerBuilder $container, $type)
+	{
+		$definitionas = $container->getDefinitions();
+		foreach ($definitionas as $definition) {
+			if ($definition->class === $type) {
+				return $definition;
+			}
+		}
+		return NULL;
 	}
 
 	/**
