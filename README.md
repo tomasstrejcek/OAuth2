@@ -249,8 +249,8 @@ In case or error:
 }
 ```
 
-4. Client credentials (working draft)
-------------------------------------
+4. Client credentials
+---------------------
 If application needs to get access token for their own account outside the context of any specific user this is probably the best way.
 
 ##### Request for access token:
