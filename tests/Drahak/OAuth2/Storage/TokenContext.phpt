@@ -36,7 +36,7 @@ class TokenContextTest extends TestCase
     public function testGetInvalidToken()
     {
 		Assert::throws(function() {
-			$this->context->getToken('totaly doesn\'t exist');
+			$this->context->getToken('totally doesn\'t exist');
 		}, 'Drahak\OAuth2\InvalidStateException');
     }
 
