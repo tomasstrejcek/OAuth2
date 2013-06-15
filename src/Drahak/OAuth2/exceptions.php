@@ -151,9 +151,9 @@ class InvalidScopeException extends OAuthException
 {
 
 	/** @var string */
-	protected $type = 'invalid_scope';
+	protected $key = 'invalid_scope';
 
-	public function __construct($message = 'The grant type is not authorized for this client', \Exception $previous = NULL)
+	public function __construct($message = 'Given scope does not exist', \Exception $previous = NULL)
 	{
 		parent::__construct($message, NULL, $previous);
 	}

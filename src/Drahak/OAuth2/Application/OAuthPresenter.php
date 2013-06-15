@@ -158,12 +158,16 @@ class OAuthPresenter extends Presenter implements IOAuthPresenter
 			throw new UnauthorizedClientException;
 		}
 
-		$scope = array_filter(explode(',', str_replace(' ', ',', $scope)));
-		$code = $this->authorizationCode->create($this->client, $this->user->getId(), $scope);
-		$data = array(
-			'code' => $code->getAuthorizationCode()
-		);
-		$this->oauthResponse($data, $redirectUrl);
+		try {
+			$scope = array_filter(explode(',', str_replace(' ', ',', $scope)));
+			$code = $this->authorizationCode->create($this->client, $this->user->getId(), $scope);
+			$data = array(
+				'code' => $code->getAuthorizationCode()
+			);
+			$this->oauthResponse($data, $redirectUrl);
+		} catch (OAuthException $e) {
+			$this->oauthError($e);
+		}
 	}
 
 	/**
