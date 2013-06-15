@@ -1,9 +1,9 @@
 <?php
-namespace Drahak\OAuth2\Token;
+namespace Drahak\OAuth2\Storage\AuthorizationCodes;
 
-use Drahak\OAuth2\Storage;
 use Drahak\OAuth2\IKeyGenerator;
-use Drahak\OAuth2\Storage\AuthorizationCodes\IAuthorizationCodeStorage;
+use Drahak\OAuth2\Storage\ITokenFacade;
+use Drahak\OAuth2\Storage\InvalidAuthorizationCodeException;
 use Drahak\OAuth2\Storage\Clients\IClient;
 use Nette\Object;
 
@@ -12,7 +12,7 @@ use Nette\Object;
  * @package Drahak\OAuth2\Token
  * @author Drahomír Hanák
  */
-class AuthorizationCode extends Object implements IToken
+class AuthorizationCodeFacade extends Object implements ITokenFacade
 {
 
 	/** @var int */
@@ -36,14 +36,14 @@ class AuthorizationCode extends Object implements IToken
 	 * @param IClient $client
 	 * @param string|int $userId
 	 * @param array $scope
-	 * @return Storage\AuthorizationCodes\AuthorizationCode
+	 * @return AuthorizationCode
 	 */
 	public function create(IClient $client, $userId, array $scope = array())
 	{
 		$accessExpires = new \DateTime;
 		$accessExpires->modify('+' . $this->lifetime . ' seconds');
 
-		$authorizationCode = new Storage\AuthorizationCodes\AuthorizationCode(
+		$authorizationCode = new AuthorizationCode(
 			$this->keyGenerator->generate(),
 			$accessExpires,
 			$client->getId(),
@@ -56,9 +56,10 @@ class AuthorizationCode extends Object implements IToken
 	}
 
 	/**
-	 * Check if token's valid
+	 * Get authorization code entity
 	 * @param string $token
-	 * @throws Storage\AuthorizationCodes\IAuthorizationCode
+	 * @return IAuthorizationCode|NULL
+	 *
 	 * @throws InvalidAuthorizationCodeException
 	 */
 	public function getEntity($token)

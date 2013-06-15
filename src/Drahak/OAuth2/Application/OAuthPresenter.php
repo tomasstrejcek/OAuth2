@@ -8,8 +8,8 @@ use Drahak\OAuth2\InvalidScopeException;
 use Drahak\OAuth2\InvalidStateException;
 use Drahak\OAuth2\OAuthException;
 use Drahak\OAuth2\Storage\Clients\IClient;
-use Drahak\OAuth2\Token;
-use Drahak\OAuth2\Token\InvalidAuthorizationCodeException;
+use Drahak\OAuth2\Storage;
+use Drahak\OAuth2\Storage\InvalidAuthorizationCodeException;
 use Drahak\OAuth2\Grant\GrantType;
 use Drahak\OAuth2\Storage\Clients\IClientStorage;
 use Drahak\OAuth2\UnauthorizedClientException;
@@ -31,7 +31,7 @@ class OAuthPresenter extends Presenter implements IOAuthPresenter
 	/** @var GrantContext */
 	private $grantContext;
 
-	/** @var Token\AuthorizationCode */
+	/** @var Storage\AuthorizationCodeFacade */
 	protected $authorizationCode;
 
 	/** @var IClientStorage */
@@ -51,9 +51,9 @@ class OAuthPresenter extends Presenter implements IOAuthPresenter
 
 	/**
 	 * Inject token manager - authorization code
-	 * @param Token\AuthorizationCode $authorizationCode
+	 * @param Storage\AuthorizationCodeFacade $authorizationCode
 	 */
-	public function injectAuthorizationCode(Token\AuthorizationCode $authorizationCode)
+	public function injectAuthorizationCode(Storage\AuthorizationCodeFacade $authorizationCode)
 	{
 		$this->authorizationCode = $authorizationCode;
 	}

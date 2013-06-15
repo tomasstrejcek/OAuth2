@@ -1,22 +1,23 @@
 <?php
-namespace Tests\Drahak\OAuth2\Token;
+namespace Tests\Drahak\OAuth2\Storage\RefreshTokens;
 
-require_once __DIR__ . '/../../bootstrap.php';
+require_once __DIR__ . '/../../../bootstrap.php';
 
-use Drahak\OAuth2\Token\RefreshToken;
+use Drahak\OAuth2\Storage\RefreshTokens\RefreshTokenFacade;
 use Nette;
 use Tester;
 use Tester\Assert;
 use Tests\TestCase;
+use Mockista\MockInterface;
 
 /**
- * Test: Tests\Drahak\OAuth2\Token\RefreshToken.
+ * Test: Tests\Drahak\OAuth2\Storage\RefreshTokens\RefreshToken.
  *
- * @testCase Tests\Drahak\OAuth2\Token\RefreshTokenTest
+ * @testCase Tests\Drahak\OAuth2\Storage\RefreshTokens\RefreshTokenFacadeTest
  * @author Drahomír Hanák
- * @package Tests\Drahak\OAuth2\Token
+ * @package Tests\Drahak\OAuth2\Storage\RefreshTokens
  */
-class RefreshTokenTest extends TestCase
+class RefreshTokenFacadeTest extends TestCase
 {
 
 	/** @var MockInterface */
@@ -25,7 +26,7 @@ class RefreshTokenTest extends TestCase
 	/** @var MockInterface */
 	private $keyGenerator;
 
-	/** @var RefreshToken */
+	/** @var RefreshTokenFacade */
 	private $token;
 
 	protected function setUp()
@@ -33,7 +34,7 @@ class RefreshTokenTest extends TestCase
 		parent::setUp();
 		$this->storage = $this->mockista->create('Drahak\OAuth2\Storage\RefreshTokens\IRefreshTokenStorage');
 		$this->keyGenerator = $this->mockista->create('Drahak\OAuth2\IKeyGenerator');
-		$this->token = new RefreshToken(3600, $this->keyGenerator, $this->storage);
+		$this->token = new RefreshTokenFacade(3600, $this->keyGenerator, $this->storage);
 	}
 
 	public function testCheckInvalidToken()
@@ -44,7 +45,7 @@ class RefreshTokenTest extends TestCase
 
 		Assert::throws(function() use($token) {
 			$this->token->getEntity($token);
-		}, 'Drahak\OAuth2\Token\InvalidRefreshTokenException');
+		}, 'Drahak\OAuth2\Storage\InvalidRefreshTokenException');
 	}
 
 	public function testValidToken()
@@ -75,4 +76,4 @@ class RefreshTokenTest extends TestCase
 	}
 
 }
-\run(new RefreshTokenTest());
+\run(new RefreshTokenFacadeTest());

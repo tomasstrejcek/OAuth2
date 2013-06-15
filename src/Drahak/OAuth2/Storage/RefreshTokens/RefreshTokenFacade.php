@@ -1,11 +1,10 @@
 <?php
-namespace Drahak\OAuth2\Token;
+namespace Drahak\OAuth2\Storage\RefreshTokens;
 
-use Drahak\OAuth2\Storage;
 use Drahak\OAuth2\IKeyGenerator;
-use Drahak\OAuth2\Storage\RefreshTokens\IRefreshTokenStorage;
+use Drahak\OAuth2\Storage\ITokenFacade;
+use Drahak\OAuth2\Storage\InvalidRefreshTokenException;
 use Drahak\OAuth2\Storage\Clients\IClient;
-use Nette\Security\User;
 use Nette\Object;
 
 /**
@@ -16,7 +15,7 @@ use Nette\Object;
  * @property-read int $lifetime
  * @property-read IRefreshTokenStorage $storage
  */
-class RefreshToken extends Object implements IToken
+class RefreshTokenFacade extends Object implements ITokenFacade
 {
 
 	/** @var IRefreshTokenStorage */
@@ -40,13 +39,13 @@ class RefreshToken extends Object implements IToken
 	 * @param IClient $client
 	 * @param int $userId
 	 * @param array $scope
-	 * @return Storage\RefreshTokens\RefreshToken
+	 * @return RefreshToken
 	 */
 	public function create(IClient $client, $userId, array $scope = array())
 	{
 		$expires = new \DateTime;
 		$expires->modify('+' . $this->lifetime . ' seconds');
-		$refreshToken = new Storage\RefreshTokens\RefreshToken(
+		$refreshToken = new RefreshToken(
 			$this->keyGenerator->generate(),
 			$expires,
 			$client->getId(),
@@ -60,7 +59,7 @@ class RefreshToken extends Object implements IToken
 	/**
 	 * Get refresh token entity
 	 * @param string $refreshToken
-	 * @return Storage\RefreshTokens\IRefreshToken|NULL
+	 * @return IRefreshToken|NULL
 	 *
 	 * @throws InvalidRefreshTokenException
 	 */

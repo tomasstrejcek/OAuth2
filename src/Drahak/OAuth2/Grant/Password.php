@@ -3,7 +3,7 @@ namespace Drahak\OAuth2\Grant;
 
 use Drahak\OAuth2\InvalidRequestException;
 use Drahak\OAuth2\InvalidStateException;
-use Drahak\OAuth2\Token\IToken;
+use Drahak\OAuth2\Storage\ITokenFacade;
 use Nette\Security\AuthenticationException;
 
 /**
@@ -50,8 +50,8 @@ class Password extends GrantType
 	 */
 	protected function generateAccessToken()
 	{
-		$accessTokenStorage = $this->token->getToken(IToken::ACCESS_TOKEN);
-		$refreshTokenStorage = $this->token->getToken(IToken::REFRESH_TOKEN);
+		$accessTokenStorage = $this->token->getToken(ITokenFacade::ACCESS_TOKEN);
+		$refreshTokenStorage = $this->token->getToken(ITokenFacade::REFRESH_TOKEN);
 
 		$accessToken = $accessTokenStorage->create($this->getClient(), $this->user->getId(), $this->getScope());
 		$refreshToken = $refreshTokenStorage->create($this->getClient(), $this->user->getId(), $this->getScope());

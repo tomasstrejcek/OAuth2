@@ -1,9 +1,9 @@
 <?php
-namespace Tests\Drahak\OAuth2\Token;
+namespace Tests\Drahak\OAuth2\Storage\AuthorizationCodes;
 
-require_once __DIR__ . '/../../bootstrap.php';
+require_once __DIR__ . '/../../../bootstrap.php';
 
-use Drahak\OAuth2\Token\AuthorizationCode;
+use Drahak\OAuth2\Storage\AuthorizationCodes\AuthorizationCodeFacade;
 use Mockista\MockInterface;
 use Nette;
 use Tester;
@@ -11,13 +11,13 @@ use Tester\Assert;
 use Tests\TestCase;
 
 /**
- * Test: Tests\Drahak\OAuth2\Token\AuthorizationCode.
+ * Test: Tests\Drahak\OAuth2\Storage\AuthorizationCodes\AuthorizationCode.
  *
- * @testCase Tests\Drahak\OAuth2\Token\AuthorizationCodeStorageTest
+ * @testCase Tests\Drahak\OAuth2\Storage\AuthorizationCodes\AuthorizationCodeStorageTest
  * @author Drahomír Hanák
- * @package Tests\Drahak\OAuth2\Token
+ * @package Tests\Drahak\OAuth2\Storage\AuthorizationCodes
  */
-class AuthorizationCodeTest extends TestCase
+class AuthorizationCodeFacadeTest extends TestCase
 {
 
 	/** @var MockInterface */
@@ -26,7 +26,7 @@ class AuthorizationCodeTest extends TestCase
 	/** @var MockInterface */
 	private $keyGenerator;
 
-	/** @var AuthorizationCode */
+	/** @var AuthorizationCodeFacade */
 	private $token;
 
 	protected function setUp()
@@ -34,7 +34,7 @@ class AuthorizationCodeTest extends TestCase
 		parent::setUp();
 		$this->storage = $this->mockista->create('Drahak\OAuth2\Storage\AuthorizationCodes\IAuthorizationCodeStorage');
 		$this->keyGenerator = $this->mockista->create('Drahak\OAuth2\IKeyGenerator');
-		$this->token = new AuthorizationCode(3600, $this->keyGenerator, $this->storage);
+		$this->token = new AuthorizationCodeFacade(3600, $this->keyGenerator, $this->storage);
 	}
 
 	public function testCheckInvalidToken()
@@ -45,7 +45,7 @@ class AuthorizationCodeTest extends TestCase
 
 		Assert::throws(function() use($token) {
 			$this->token->getEntity($token);
-		}, 'Drahak\OAuth2\Token\InvalidAuthorizationCodeException');
+		}, 'Drahak\OAuth2\Storage\InvalidAuthorizationCodeException');
 	}
 
 	public function testValidToken()
@@ -77,4 +77,4 @@ class AuthorizationCodeTest extends TestCase
 	}
 
 }
-\run(new AuthorizationCodeTest());
+\run(new AuthorizationCodeFacadeTest());

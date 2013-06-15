@@ -6,7 +6,7 @@ require_once __DIR__ . '/GrantTestCase.php';
 
 use Drahak\OAuth2\Grant\ClientCredentials;
 use Drahak\OAuth2\Grant\GrantType;
-use Drahak\OAuth2\Token\IToken;
+use Drahak\OAuth2\Storage\ITokenFacade;
 use Nette;
 use Tester;
 use Tester\Assert;
@@ -53,8 +53,8 @@ class ClientCredentialsTest extends GrantTestCase
 			'scope' => NULL
 		));
 		$this->createTokenMocks(array(
-			IToken::ACCESS_TOKEN => $this->accessToken,
-			IToken::REFRESH_TOKEN => $this->refreshToken
+			ITokenFacade::ACCESS_TOKEN => $this->accessToken,
+			ITokenFacade::REFRESH_TOKEN => $this->refreshToken
 		));
 
 		$this->client->expects('getClient')->once()->andReturn($this->clientEntity);

@@ -49,10 +49,10 @@ abstract class GrantTestCase extends TestCase
 		$this->clientEntity = $this->mockista->create('Drahak\OAuth2\Storage\Clients\IClient');
 		$this->accessTokenEntity = $this->mockista->create('Drahak\OAuth2\Storage\AccessTokens\IAccessToken');
 		$this->refreshTokenEntity = $this->mockista->create('Drahak\OAuth2\Storage\RefreshTokens\IRefreshToken');
-		$this->accessToken = $this->mockista->create('Drahak\OAuth2\Token\AccessToken');
-		$this->refreshToken = $this->mockista->create('Drahak\OAuth2\Token\RefreshToken');
-		$this->authorizationCode = $this->mockista->create('Drahak\OAuth2\Token\AuthorizationCode');
-		$this->token = $this->mockista->create('Drahak\OAuth2\Token\TokenContext');
+		$this->accessToken = $this->mockista->create('Drahak\OAuth2\Storage\AccessTokens\AccessToken');
+		$this->refreshToken = $this->mockista->create('Drahak\OAuth2\Storage\RefreshTokens\RefreshToken');
+		$this->authorizationCode = $this->mockista->create('Drahak\OAuth2\Storage\AuthorizationCodes\AuthorizationCode');
+		$this->token = $this->mockista->create('Drahak\OAuth2\Storage\TokenContext');
 		$this->input = $this->mockista->create('Drahak\OAuth2\Http\IInput');
 		$this->user = $this->mockista->create('Nette\Security\User');
 	}

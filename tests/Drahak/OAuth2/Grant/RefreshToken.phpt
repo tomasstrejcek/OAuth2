@@ -7,7 +7,7 @@ require_once __DIR__ . '/GrantTestCase.php';
 use Drahak\OAuth2\Grant\AuthorizationCode;
 use Drahak\OAuth2\Grant\IGrant;
 use Drahak\OAuth2\Grant\RefreshToken;
-use Drahak\OAuth2\Token\IToken;
+use Drahak\OAuth2\Storage\ITokenFacade;
 use Nette;
 use Tester;
 use Tester\Assert;
@@ -15,7 +15,7 @@ use Tester\Assert;
 /**
  * Test: Tests\Drahak\OAuth2\Grant\RefreshToken.
  *
- * @testCase Tests\Drahak\OAuth2\Grant\RefreshTokenTest
+ * @testCase Tests\Drahak\OAuth2\Grant\RefreshTokenFacadeTest
  * @author Drahomír Hanák
  * @package Tests\Drahak\OAuth2\Grant
  */
@@ -35,7 +35,7 @@ class RefreshTokenTest extends GrantTestCase
 	{
 		$data = array('refresh_token' => '98b2950c11d8f3aa5773993ce0db712809524eeb4e625db00f39fb1530eee4ec');
 		$this->createInputMock($data);
-		$this->createTokenMocks(array(IToken::REFRESH_TOKEN => $this->refreshToken));
+		$this->createTokenMocks(array(ITokenFacade::REFRESH_TOKEN => $this->refreshToken));
 
 		$storage = $this->mockista->create('Drahak\OAuth2\Storage\RefreshTokens\IRefreshTokenStorage');
 		$storage->expects('remove')->once()->with($data['refresh_token']);
@@ -58,8 +58,8 @@ class RefreshTokenTest extends GrantTestCase
 			'client_secret' => 'a2a2f11ece9c35f117936fc44529a174e85ca68005b7b0d1d0d2b5842d907f12'
 		));
 		$this->createTokenMocks(array(
-			IToken::ACCESS_TOKEN => $this->accessToken,
-			IToken::REFRESH_TOKEN => $this->refreshToken
+			ITokenFacade::ACCESS_TOKEN => $this->accessToken,
+			ITokenFacade::REFRESH_TOKEN => $this->refreshToken
 		));
 
 		$this->client->expects('getClient')->once()->andReturn($this->clientEntity);

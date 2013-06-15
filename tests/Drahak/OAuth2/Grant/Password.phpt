@@ -5,7 +5,7 @@ require_once __DIR__ . '/../../bootstrap.php';
 require_once __DIR__ . '/GrantTestCase.php';
 
 use Drahak\OAuth2\Grant\Password;
-use Drahak\OAuth2\Token\IToken;
+use Drahak\OAuth2\Storage\ITokenFacade;
 use Nette;
 use Tester;
 use Tester\Assert;
@@ -54,8 +54,8 @@ class PasswordTest extends GrantTestCase
 		$this->input->expects('getParameter')->once()->with('scope')->andReturn(NULL);
 
 		$this->createTokenMocks(array(
-			IToken::ACCESS_TOKEN => $this->accessToken,
-			IToken::REFRESH_TOKEN => $this->refreshToken
+			ITokenFacade::ACCESS_TOKEN => $this->accessToken,
+			ITokenFacade::REFRESH_TOKEN => $this->refreshToken
 		));
 
 		$this->client->expects('getClient')->once()->andReturn($this->clientEntity);

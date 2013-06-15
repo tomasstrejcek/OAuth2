@@ -1,9 +1,9 @@
 <?php
-namespace Tests\Drahak\OAuth2\Token;
+namespace Tests\Drahak\OAuth2\Storage;
 
 require_once __DIR__ . '/../../bootstrap.php';
 
-use Drahak\OAuth2\Token\TokenContext;
+use Drahak\OAuth2\Storage\TokenContext;
 use Mockista\MockInterface;
 use Nette;
 use Tester;
@@ -11,11 +11,11 @@ use Tester\Assert;
 use Tests\TestCase;
 
 /**
- * Test: Tests\Drahak\OAuth2\Token\TokenContext.
+ * Test: Tests\Drahak\OAuth2\Storage\TokenContext.
  *
- * @testCase Tests\Drahak\OAuth2\Token\TokenContextTest
+ * @testCase Tests\Drahak\OAuth2\Storage\TokenContextTest
  * @author Drahomír Hanák
- * @package Tests\Drahak\OAuth2\Token
+ * @package Tests\Drahak\OAuth2\Storage
  */
 class TokenContextTest extends TestCase
 {
@@ -29,7 +29,7 @@ class TokenContextTest extends TestCase
     protected function setUp()
     {
 		parent::setUp();
-		$this->token = $this->mockista->create('Drahak\OAuth2\Token\IToken');
+		$this->token = $this->mockista->create('Drahak\OAuth2\Storage\ITokenFacade');
 		$this->context = new TokenContext;
     }
     

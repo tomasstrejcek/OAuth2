@@ -1,9 +1,9 @@
 <?php
-namespace Tests\Drahak\OAuth2\Token;
+namespace Tests\Drahak\OAuth2\Storage\AccessTokens;
 
-require_once __DIR__ . '/../../bootstrap.php';
+require_once __DIR__ . '/../../../bootstrap.php';
 
-use Drahak\OAuth2\Token\AccessToken;
+use Drahak\OAuth2\Storage\AccessTokens\AccessTokenFacade;
 use Mockista\MockInterface;
 use Nette;
 use Tester;
@@ -11,13 +11,13 @@ use Tester\Assert;
 use Tests\TestCase;
 
 /**
- * Test: Tests\Drahak\OAuth2\Token\AccessToken.
+ * Test: Tests\Drahak\OAuth2\Storage\AccessTokens\AccessToken.
  *
- * @testCase Tests\Drahak\OAuth2\Token\AccessTokenTest
+ * @testCase Tests\Drahak\OAuth2\Storage\AccessTokens\AccessTokenFacadeTest
  * @author Drahomír Hanák
- * @package Tests\Drahak\OAuth2\Token
+ * @package Tests\Drahak\OAuth2\Storage\AccessTokens
  */
-class AccessTokenTest extends TestCase
+class AccessTokenFacadeTest extends TestCase
 {
 
 	/** @var MockInterface */
@@ -26,7 +26,7 @@ class AccessTokenTest extends TestCase
 	/** @var MockInterface */
 	private $keyGenerator;
 
-	/** @var AccessToken */
+	/** @var AccessTokenFacade */
 	private $token;
 
     protected function setUp()
@@ -34,7 +34,7 @@ class AccessTokenTest extends TestCase
 		parent::setUp();
 		$this->storage = $this->mockista->create('Drahak\OAuth2\Storage\AccessTokens\IAccessTokenStorage');
 		$this->keyGenerator = $this->mockista->create('Drahak\OAuth2\IKeyGenerator');
-		$this->token = new AccessToken(3600, $this->keyGenerator, $this->storage);
+		$this->token = new AccessTokenFacade(3600, $this->keyGenerator, $this->storage);
     }
     
     public function testCheckInvalidToken()
@@ -45,7 +45,7 @@ class AccessTokenTest extends TestCase
 
 		Assert::throws(function() use($token) {
 			$this->token->getEntity($token);
-		}, 'Drahak\OAuth2\Token\InvalidAccessTokenException');
+		}, 'Drahak\OAuth2\Storage\InvalidAccessTokenException');
 	}
 
 	public function testValidToken()
@@ -78,4 +78,4 @@ class AccessTokenTest extends TestCase
 	}
 
 }
-\run(new AccessTokenTest());
+\run(new AccessTokenFacadeTest());

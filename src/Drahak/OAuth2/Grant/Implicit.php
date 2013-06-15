@@ -1,7 +1,7 @@
 <?php
 namespace Drahak\OAuth2\Grant;
 
-use Drahak\OAuth2\Token\IToken;
+use Drahak\OAuth2\Storage\ITokenFacade;
 
 /**
  * Implicit grant type
@@ -41,7 +41,7 @@ class Implicit extends GrantType
 	 */
 	protected function generateAccessToken()
 	{
-		$accessTokenStorage = $this->token->getToken(IToken::ACCESS_TOKEN);
+		$accessTokenStorage = $this->token->getToken(ITokenFacade::ACCESS_TOKEN);
 		$accessToken = $accessTokenStorage->create($this->getClient(), $this->user->getId(), $this->getScope());
 
 		return array(

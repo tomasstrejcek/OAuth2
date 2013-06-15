@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "825a2bb0374137fc318e0fd2fa578b8b",
+    "hash": "a6e4c85c3c3361efa5d12623459fd461",
     "packages": [
         {
             "name": "nette/nette",

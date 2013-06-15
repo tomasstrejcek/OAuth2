@@ -1,14 +1,14 @@
 <?php
-namespace Drahak\OAuth2\Token;
+namespace Drahak\OAuth2\Storage;
 
 use Drahak\OAuth2\Storage\Clients\IClient;
 
 /**
- * IToken
+ * ITokenFacade
  * @package Drahak\OAuth2\Token
  * @author Drahomír Hanák
  */
-interface IToken
+interface ITokenFacade
 {
 
 	/** Default token names as defined in specification */

@@ -2,8 +2,8 @@
 namespace Drahak\OAuth2\Application;
 
 use Drahak\OAuth2\Http\IInput;
-use Drahak\OAuth2\Token\AccessToken;
-use Drahak\OAuth2\Token\InvalidAccessTokenException;
+use Drahak\OAuth2\Storage\AccessToken;
+use Drahak\OAuth2\Storage\InvalidAccessTokenException;
 use Nette\Application\ForbiddenRequestException;
 use Nette\Application\UI\Presenter;
 

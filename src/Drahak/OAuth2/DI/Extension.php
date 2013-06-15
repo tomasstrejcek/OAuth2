@@ -61,17 +61,17 @@ class Extension extends CompilerExtension
 
 		// Tokens
 		$container->addDefinition($this->prefix('accessToken'))
-			->setClass('Drahak\OAuth2\Token\AccessToken')
+			->setClass('Drahak\OAuth2\Storage\AccessTokens\AccessTokenFacade')
 			->setArguments(array($config['accessTokenLifetime']));
 		$container->addDefinition($this->prefix('refreshToken'))
-			->setClass('Drahak\OAuth2\Token\RefreshToken')
+			->setClass('Drahak\OAuth2\Storage\RefreshTokens\RefreshTokenFacade')
 			->setArguments(array($config['refreshTokenLifetime']));
 		$container->addDefinition($this->prefix('authorizationCode'))
-			->setClass('Drahak\OAuth2\Token\AuthorizationCode')
+			->setClass('Drahak\OAuth2\Storage\AuthorizationCodes\AuthorizationCodeFacade')
 			->setArguments(array($config['authorizationCodeLifetime']));
 
 		$container->addDefinition('tokenContext')
-			->setClass('Drahak\OAuth2\Token\TokenContext')
+			->setClass('Drahak\OAuth2\Storage\TokenContext')
 			->addSetup('$service->addToken(?)', array($this->prefix('@accessToken')))
 			->addSetup('$service->addToken(?)', array($this->prefix('@refreshToken')))
 			->addSetup('$service->addToken(?)', array($this->prefix('@authorizationCode')));

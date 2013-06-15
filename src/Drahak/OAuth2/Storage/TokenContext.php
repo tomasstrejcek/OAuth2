@@ -1,5 +1,5 @@
 <?php
-namespace Drahak\OAuth2\Token;
+namespace Drahak\OAuth2\Storage;
 
 use Drahak\OAuth2\InvalidStateException;
 use Nette\Object;
@@ -17,9 +17,9 @@ class TokenContext extends Object
 
 	/**
 	 * Add identifier to collection
-	 * @param IToken $token
+	 * @param ITokenFacade $token
 	 */
-	public function addToken(IToken $token)
+	public function addToken(ITokenFacade $token)
 	{
 		$this->tokens[$token->getIdentifier()] = $token;
 	}
@@ -27,7 +27,7 @@ class TokenContext extends Object
 	/**
 	 * Get token
 	 * @param string $identifier
-	 * @return IToken
+	 * @return ITokenFacade
 	 *
 	 * @throws InvalidStateException
 	 */

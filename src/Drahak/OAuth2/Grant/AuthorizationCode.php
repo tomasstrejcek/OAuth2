@@ -1,10 +1,10 @@
 <?php
 namespace Drahak\OAuth2\Grant;
 
-use Drahak\OAuth2\Token;
-use Drahak\OAuth2\Token\AccessToken;
-use Drahak\OAuth2\Token\RefreshToken;
-use Drahak\OAuth2\Token\IToken;
+use Drahak\OAuth2\Storage;
+use Drahak\OAuth2\Storage\AccessToken;
+use Drahak\OAuth2\Storage\RefreshTokenFacade;
+use Drahak\OAuth2\Storage\ITokenFacade;
 
 /**
  * AuthorizationCode
@@ -36,16 +36,16 @@ class AuthorizationCode extends GrantType
 
 	/**
 	 * Verify request
-	 * @throws Token\InvalidAuthorizationCodeException
+	 * @throws Storage\InvalidAuthorizationCodeException
 	 */
 	protected function verifyRequest()
 	{
 		$code = $this->input->getParameter('code');
 
-		$entity = $this->token->getToken(IToken::AUTHORIZATION_CODE)->getEntity($code);
+		$entity = $this->token->getToken(ITokenFacade::AUTHORIZATION_CODE)->getEntity($code);
 		$this->scope = $entity->getScope();
 
-		$this->token->getToken(IToken::AUTHORIZATION_CODE)->getStorage()->remove($code);
+		$this->token->getToken(ITokenFacade::AUTHORIZATION_CODE)->getStorage()->remove($code);
 	}
 
 	/**
@@ -55,8 +55,8 @@ class AuthorizationCode extends GrantType
 	protected function generateAccessToken()
 	{
 		$client = $this->getClient();
-		$accessTokenStorage = $this->token->getToken(IToken::ACCESS_TOKEN);
-		$refreshTokenStorage = $this->token->getToken(IToken::REFRESH_TOKEN);
+		$accessTokenStorage = $this->token->getToken(ITokenFacade::ACCESS_TOKEN);
+		$refreshTokenStorage = $this->token->getToken(ITokenFacade::REFRESH_TOKEN);
 
 		$accessToken = $accessTokenStorage->create($client, $this->user->getId(), $this->getScope());
 		$refreshToken = $refreshTokenStorage->create($client, $this->user->getId(), $this->getScope());

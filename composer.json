@@ -30,7 +30,7 @@
 		"classmap": [
 			"src/Drahak/OAuth2/exceptions.php",
 			"src/Drahak/OAuth2/Grant/exceptions.php",
-			"src/Drahak/OAuth2/Token/exceptions.php"
+			"src/Drahak/OAuth2/Storage/exceptions.php"
 		]
 	}
 }

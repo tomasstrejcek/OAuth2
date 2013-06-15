@@ -1,8 +1,8 @@
 <?php
 namespace Drahak\OAuth2\Grant;
 
-use Drahak\OAuth2\Token\InvalidRefreshTokenException;
-use Drahak\OAuth2\Token\IToken;
+use Drahak\OAuth2\Storage\InvalidRefreshTokenException;
+use Drahak\OAuth2\Storage\ITokenFacade;
 
 /**
  * RefreshToken
@@ -27,7 +27,7 @@ class RefreshToken extends GrantType
 	 */
 	protected function verifyRequest()
 	{
-		$refreshTokenStorage = $this->token->getToken(IToken::REFRESH_TOKEN);
+		$refreshTokenStorage = $this->token->getToken(ITokenFacade::REFRESH_TOKEN);
 		$refreshToken = $this->input->getParameter('refresh_token');
 
 		$refreshTokenStorage->getEntity($refreshToken);
@@ -40,8 +40,8 @@ class RefreshToken extends GrantType
 	 */
 	protected function generateAccessToken()
 	{
-		$accessTokenStorage = $this->token->getToken(IToken::ACCESS_TOKEN);
-		$refreshTokenStorage = $this->token->getToken(IToken::REFRESH_TOKEN);
+		$accessTokenStorage = $this->token->getToken(ITokenFacade::ACCESS_TOKEN);
+		$refreshTokenStorage = $this->token->getToken(ITokenFacade::REFRESH_TOKEN);
 
 		$accessToken = $accessTokenStorage->create($this->getClient(), $this->user->getId());
 		$refreshToken = $refreshTokenStorage->create($this->getClient(), $this->user->getId());

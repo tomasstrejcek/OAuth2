@@ -1,13 +1,11 @@
 <?php
-namespace Drahak\OAuth2\Token;
+namespace Drahak\OAuth2\Storage\AccessTokens;
 
-use Drahak\OAuth2\NotLoggedInException;
-use Drahak\OAuth2\Storage;
 use Drahak\OAuth2\IKeyGenerator;
-use Drahak\OAuth2\Storage\AccessTokens\IAccessTokenStorage;
+use Drahak\OAuth2\Storage\ITokenFacade;
+use Drahak\OAuth2\Storage\InvalidAccessTokenException;
 use Drahak\OAuth2\Storage\Clients\IClient;
 use Nette\Object;
-use Nette\Security\User;
 
 /**
  * AccessToken
@@ -17,7 +15,7 @@ use Nette\Security\User;
  * @property-read int $lifetime
  * @property-read IAccessTokenStorage $storage
  */
-class AccessToken extends Object implements IToken
+class AccessTokenFacade extends Object implements ITokenFacade
 {
 
 	/** @var IAccessTokenStorage */
@@ -38,17 +36,17 @@ class AccessToken extends Object implements IToken
 
 	/**
 	 * Create access token
-	 * @param Storage\Clients\IClient $client
+	 * @param IClient $client
 	 * @param string|int $userId
 	 * @param array $scope
-	 * @return Storage\AccessTokens\AccessToken
+	 * @return AccessToken
 	 */
 	public function create(IClient $client, $userId, array $scope = array())
 	{
 		$accessExpires = new \DateTime;
 		$accessExpires->modify('+' . $this->lifetime . ' seconds');
 
-		$accessToken = new Storage\AccessTokens\AccessToken(
+		$accessToken = new AccessToken(
 			$this->keyGenerator->generate(),
 			$accessExpires,
 			$client->getId(),
@@ -63,7 +61,8 @@ class AccessToken extends Object implements IToken
 	/**
 	 * Check access token
 	 * @param string $accessToken
-	 * @return Storage\AccessTokens\IAccessToken|NULL
+	 * @return IAccessToken|NULL
+	 *
 	 * @throws InvalidAccessTokenException
 	 */
 	public function getEntity($accessToken)

@@ -1,7 +1,7 @@
 <?php
 namespace Drahak\OAuth2\Grant;
 
-use Drahak\OAuth2\Token\IToken;
+use Drahak\OAuth2\Storage\ITokenFacade;
 use Drahak\OAuth2\UnauthorizedClientException;
 
 /**
@@ -29,8 +29,8 @@ class ClientCredentials extends GrantType
 	protected function generateAccessToken()
 	{
 		$client = $this->getClient();
-		$accessTokenStorage = $this->token->getToken(IToken::ACCESS_TOKEN);
-		$refreshTokenStorage = $this->token->getToken(IToken::REFRESH_TOKEN);
+		$accessTokenStorage = $this->token->getToken(ITokenFacade::ACCESS_TOKEN);
+		$refreshTokenStorage = $this->token->getToken(ITokenFacade::REFRESH_TOKEN);
 
 		$accessToken = $accessTokenStorage->create($client, NULL, $this->getScope());
 		$refreshToken = $refreshTokenStorage->create($client, NULL, $this->getScope());
