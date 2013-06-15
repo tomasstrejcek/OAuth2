@@ -2,6 +2,19 @@ OAuth2 Provider
 ---------------
 This repository is being developed.
 
+Configuration
+-------------
+```
+oauth2:
+	accessTokenLifetime: 3600 # 1 hour
+	refreshTokenLifetime: 36000 # 10 hours
+	authorizationCodeLifetime: 360 # 6 minutes
+```
+
+- `accessTokenLifetime` - access token life time in seconds
+- `refreshTokenLifetime` - refresh token life time in seconds
+- `authorizationCodeLifetime` - authorization code life time in seconds
+
 #### [Abstract protocol flow](http://tools.ietf.org/html/rfc6749#section-1.2)
 ```
      +--------+                               +---------------+
