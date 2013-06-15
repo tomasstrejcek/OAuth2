@@ -1,10 +1,26 @@
 OAuth2 Provider
----------------
+===============
 This repository is being developed.
 
-Configuration
--------------
+Requirements
+------------
+Drahak/OAuth2 requires PHP version 5.3.0 or higher. The only production dependency is [Nette framework 2.0.x](http://www.nette.org).
+
+Installation & setup
+--------------------
+The easist way is to use [Composer](http://doc.nette.org/en/composer)
+
+	$ composer require drahak/oauth2:@dev
+
+Then add following code to your app bootstrap file before creating container:
+
+```php
+Drahak\OAuth2\DI\Extension::install($configurator);
 ```
+
+Neon configuration
+------------------
+```yaml
 oauth2:
 	accessTokenLifetime: 3600 # 1 hour
 	refreshTokenLifetime: 36000 # 10 hours
@@ -14,6 +30,9 @@ oauth2:
 - `accessTokenLifetime` - access token life time in seconds
 - `refreshTokenLifetime` - refresh token life time in seconds
 - `authorizationCodeLifetime` - authorization code life time in seconds
+
+OAuth2
+------
 
 #### [Abstract protocol flow](http://tools.ietf.org/html/rfc6749#section-1.2)
 ```
