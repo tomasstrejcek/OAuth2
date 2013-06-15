@@ -1,0 +1,32 @@
+parameters:
+    database:
+        driver: mysql
+        host: localhost
+        dbname: oauth_test
+        user: root
+        password:
+
+extensions:
+    oauth2: Drahak\OAuth2\DI\Extension
+
+php:
+    date.timezone: Europe/Prague
+
+nette:
+    database:
+        default:
+            dsn: '%database.driver%:host=%database.host%;dbname=%database.dbname%'
+            user: %database.user%
+            password: %database.password%
+            debugger: true
+
+    session:
+        autoStart: false
+
+oauth2:
+    accessTokenLifetime: 3600
+    refreshTokenLifetime: 36000
+
+services:
+
+factories:

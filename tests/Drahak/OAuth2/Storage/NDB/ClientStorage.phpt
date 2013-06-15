@@ -2,14 +2,15 @@
 namespace Tests\Drahak\OAuth2\Storage\NDB;
 
 require_once __DIR__ . '/../../../bootstrap.php';
+require_once __DIR__ . '/../../../DatabaseTestCase.php';
 
+use Drahak\OAuth2\Grant\IGrant;
 use Drahak\OAuth2\Storage\Clients\IClient;
 use Drahak\OAuth2\Storage\NDB\ClientStorage;
-use Mockista\MockInterface;
 use Nette;
 use Tester;
 use Tester\Assert;
-use Tests\TestCase;
+use Tests\DatabaseTestCase;
 
 /**
  * Test: Tests\Drahak\OAuth2\Storage\NDB\ClientStorage.
@@ -18,62 +19,42 @@ use Tests\TestCase;
  * @author Drahomír Hanák
  * @package Tests\Drahak\OAuth2\Storage\NDB
  */
-class ClientStorageTest extends TestCase
+class ClientStorageTest extends DatabaseTestCase
 {
-
-	/** @var MockInterface */
-	private $selectionFactory;
-
 	/** @var ClientStorage */
 	private $storage;
     
     protected function setUp()
     {
 		parent::setUp();
-		$this->selectionFactory = $this->mockista->create('Nette\Database\SelectionFactory');
 		$this->storage = new ClientStorage($this->selectionFactory);
-    }
-    
-    public function testGetClientByIdAndSecret()
-    {
-		$params = array('id' => 1, 'secret' => '54da65adad9');
-		$rowData = $params + array('redirect_url' => 'httl://localhost/');
+	}
 
-		$selection = $this->mockista->create('Nette\Database\Table\Selection');
-		$selection->expects('where')->once()->with(array('id' => $params['id']))->andReturn($selection);
-		$selection->expects('where')->once()->with(array('secret' => $params['secret']))->andReturn($selection);
-		$selection->expects('fetch')->once()->andReturn($rowData);
-
-		$this->selectionFactory->expects('table')->once()->with('oauth_client')->andReturn($selection);
-
-		$client = $this->storage->getClient($params['id'], $params['secret']);
-		Assert::true($client instanceof IClient);
-		Assert::equal($client->getId(), $rowData['id']);
-		Assert::equal($client->getSecret(), $rowData['secret']);
-		Assert::equal($client->getRedirectUrl(), $rowData['redirect_url']);
-    }
-
-	public function testAllowClientToUseGrantType()
+	public function testGetCientByIdAndSecret()
 	{
-		$selection = $this->mockista->create('Nette\Database\Table\Selection');
-		$connection = $this->mockista->create('Nette\Database\Connection');
+		$id = 'd3a213ad-d142-11';
+		$secret = 'a2a2f11ece9c35f117936fc44529a174e85ca68005b7b0d1d0d2b5842d907f12';
 
-		$this->selectionFactory->expects('table')
-			->once()
-			->andReturn($selection);
+		$client = $this->storage->getClient($id, $secret);
+		Assert::true($client instanceof IClient);
+		Assert::equal($client->getId(), $id);
+		Assert::equal($client->getSecret(), $secret);
+	}
 
-		$selection->expects('getConnection')->andReturn($connection);
+	public function testWheneverIsUserAllowedToUseGrantType()
+	{
+		$id = 'd3a213ad-d142-11';
 
-		$connection->expects('query')
-			->once()
-			->andReturn($selection);
+		$canUseGrant = $this->storage->canUseGrantType($id, IGrant::CLIENT_CREDENTIALS);
+		Assert::true($canUseGrant);
+	}
 
-		$selection->expects('fetch')
-			->once()
-			->andReturn(array('result' => 'set'));
+	public function testUserIsNotAllowedToUseGrantType()
+	{
+		$id = 'd3a213ad-d142-11';
 
-		$result = $this->storage->canUseGrantType(1, 'test_credentials');
-		Assert::true($result);
+		$canUseGrant = $this->storage->canUseGrantType($id, 'test_credentials');
+		Assert::false($canUseGrant);
 	}
 
 }

@@ -8,10 +8,6 @@ CREATE TABLE oauth_client (
   PRIMARY KEY (id)
 );
 
--- Create sample client
-INSERT INTO oauth_client (id, secret, redirect_url) VALUES
-('d3a213ad-d142-11',	'a2a2f11ece9c35f117936fc44529a174e85ca68005b7b0d1d0d2b5842d907f12',	'http://localhost/OAuth2/');
-
 -- List of scope
 CREATE TABLE oauth_scope (
   name VARCHAR(80) NOT NULL,
@@ -27,35 +23,19 @@ CREATE TABLE oauth_grant (
   PRIMARY KEY (id)
 );
 
--- Base client roles
-INSERT INTO oauth_grant (id, name, description) VALUES
-(1,	'authorization_code',	'Allows to use authroization code grant type'),
-(2,	'implicit',	'Allows to use implicit grant type'),
-(3,	'password',	'Allows to use password grant type'),
-(4,	'refresh_token',	'Allows to use refresh token grant type'),
-(5,	'client_credentials',	'Allows to use client credentials grant type');
-
 -- Client grant connect table
 CREATE TABLE oauth_client_grant (
   id INT(11) NOT NULL AUTO_INCREMENT,
   client_id BINARY(16) NOT NULL,
-  role_id INT(11) NOT NULL,
+  grant_id INT(11) NOT NULL,
   PRIMARY KEY (id),
   KEY client_id (client_id),
-  KEY role_id (role_id),
+  KEY grant_id (grant_id),
   FOREIGN KEY (client_id) REFERENCES oauth_client (id)
     ON DELETE CASCADE,
-  FOREIGN KEY (role_id) REFERENCES oauth_role (id)
+  FOREIGN KEY (grant_id) REFERENCES oauth_grant (id)
     ON DELETE CASCADE
 );
-
--- Allow default client to use everything
-INSERT INTO oauth_client_grant (id, client_id, role_id) VALUES
-(1,	'd3a213ad-d142-11',	1),
-(2,	'd3a213ad-d142-11',	2),
-(3,	'd3a213ad-d142-11',	3),
-(4,	'd3a213ad-d142-11',	4),
-(5,	'd3a213ad-d142-11',	5);
 
 -- Sample user table
 CREATE TABLE oauth_user (
@@ -120,11 +100,11 @@ CREATE TABLE oauth_refresh_token (
 -- Authorization code scope
 CREATE TABLE oauth_authorization_code_scope (
   id INT(11) NOT NULL AUTO_INCREMENT,
-  authorization_code CHAR(60) NOT NULL,
+  authorization_code CHAR(64) NOT NULL,
   scope_name VARCHAR(80) NOT NULL,
   PRIMARY KEY (id),
   KEY authorization_code (authorization_code),
-KEY scope_name (scope_name),
+  KEY scope_name (scope_name),
   FOREIGN KEY (authorization_code) REFERENCES oauth_authorization_code (authorization_code)
     ON DELETE CASCADE,
   FOREIGN KEY (scope_name) REFERENCES oauth_scope (name)

@@ -14,7 +14,7 @@ use Tester\Assert;
 /**
  * Test: Tests\Drahak\OAuth2\Grant\AuthorizationCode.
  *
- * @testCase Tests\Drahak\OAuth2\Grant\AuthorizationCodeTest
+ * @testCase Tests\Drahak\OAuth2\Grant\AuthorizationCodeStorageTest
  * @author Drahomír Hanák
  * @package Tests\Drahak\OAuth2\Grant
  */

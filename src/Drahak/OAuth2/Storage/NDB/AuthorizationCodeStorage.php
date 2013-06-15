@@ -53,8 +53,7 @@ class AuthorizationCodeStorage extends Object implements IAuthorizationCodeStora
 	 */
 	public function store(IAuthorizationCode $authorizationCode)
 	{
-		$connection = $this->getTable()->getConnection();
-		$connection->beginTransaction();
+
 		$this->getTable()->insert(array(
 			'authorization_code' => $authorizationCode->getAuthorizationCode(),
 			'client_id' => $authorizationCode->getClientId(),
@@ -62,6 +61,8 @@ class AuthorizationCodeStorage extends Object implements IAuthorizationCodeStora
 			'expires' => $authorizationCode->getExpires()
 		));
 
+		$connection = $this->getTable()->getConnection();
+		$connection->beginTransaction();
 		try {
 			foreach ($authorizationCode->getScope() as $scope) {
 				$this->getScopeTable()->insert(array(

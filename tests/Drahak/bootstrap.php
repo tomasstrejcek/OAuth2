@@ -5,6 +5,7 @@ if (@!include __DIR__ . '/../../libs/autoload.php') {
 }
 require_once __DIR__ . '/TestCase.php';
 
+
 // configure environment
 Tester\Helpers::setup();
 class_alias('Tester\Assert', 'Assert');

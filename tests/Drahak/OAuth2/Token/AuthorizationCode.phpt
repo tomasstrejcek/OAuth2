@@ -13,7 +13,7 @@ use Tests\TestCase;
 /**
  * Test: Tests\Drahak\OAuth2\Token\AuthorizationCode.
  *
- * @testCase Tests\Drahak\OAuth2\Token\AuthorizationCodeTest
+ * @testCase Tests\Drahak\OAuth2\Token\AuthorizationCodeStorageTest
  * @author Drahomír Hanák
  * @package Tests\Drahak\OAuth2\Token
  */

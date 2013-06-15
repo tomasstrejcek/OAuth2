@@ -2,14 +2,15 @@
 namespace Tests\Drahak\OAuth2\Storage\NDB;
 
 require_once __DIR__ . '/../../../bootstrap.php';
+require_once __DIR__ . '/../../../DatabaseTestCase.php';
 
+use Drahak\OAuth2\Storage\AccessTokens\AccessToken;
 use Drahak\OAuth2\Storage\AccessTokens\IAccessToken;
 use Drahak\OAuth2\Storage\NDB\AccessTokenStorage;
-use Mockista\MockInterface;
 use Nette;
 use Tester;
 use Tester\Assert;
-use Tests\TestCase;
+use Tests\DatabaseTestCase;
 
 /**
  * Test: Tests\Drahak\OAuth2\Storage\NDB\AccessTokenStorage.
@@ -18,11 +19,8 @@ use Tests\TestCase;
  * @author Drahomír Hanák
  * @package Tests\Drahak\OAuth2\Storage\NDB
  */
-class AccessTokenStorageTest extends TestCase
+class AccessTokenStorageTest extends DatabaseTestCase
 {
-
-	/** @var MockInterface */
-	private $selectionFactory;
 
 	/** @var AccessTokenStorage */
 	private $storage;
@@ -30,133 +28,63 @@ class AccessTokenStorageTest extends TestCase
     protected function setUp()
     {
 		parent::setUp();
-		$this->selectionFactory = $this->mockista->create('Nette\Database\SelectionFactory');
 		$this->storage = new AccessTokenStorage($this->selectionFactory);
     }
     
-    public function testStoreNewAccessToken()
+    public function testCreateAccessToken()
     {
-		$data = array(
-			'access_token' => 'adfs54s8br48nfd8h7t4m8',
-			'client_id' => 1,
-			'user_id' => 5,
-			'expires' => new \DateTime
-		);
-
-		$selection = $this->mockista->create('Nette\Database\Table\Selection');
-		$scopeSelection = $this->mockista->create('Nette\Database\Table\Selection');
-		$connection = $this->mockista->create('Nette\Database\Connection');
-		$entity = $this->mockista->create('Drahak\OAuth2\Storage\AccessTokens\IAccessToken');
-
-		$this->selectionFactory->expects('table')->once()->with('oauth_access_token')->andReturn($selection);
-		$this->selectionFactory->expects('table')->once()->with('oauth_access_token_scope')->andReturn($scopeSelection);
-
-		$entity->expects('getAccessToken')->once()->andReturn($data['access_token']);
-		$entity->expects('getClientId')->once()->andReturn($data['client_id']);
-		$entity->expects('getUserId')->once()->andReturn($data['user_id']);
-		$entity->expects('getExpires')->once()->andReturn($data['expires']);
-		$entity->expects('getScope')->once()->andReturn(array('profile'));
-
-		$selection->expects('insert')->once()->with($data);
-		$selection->expects('getConnection')->once()->andReturn($connection);
-
-		$connection->expects('beginTransaction')->once();
-		$connection->expects('commit')->once();
-
-		$scopeSelection->expects('insert')
-			->once()
-			->with(array(
-				'access_token' => $data['access_token'],
-				'scope_name' => 'profile'
-			));
-
+		$entity = $this->createEntity();
 		$this->storage->store($entity);
+
+		$stored = $this->storage->getValidAccessToken($entity->getAccessToken());
+		Assert::true($stored instanceof IAccessToken);
     }
 
-	public function testThrowsExceptionWhenInvalidScopeIsGiven()
+	public function testRemoveAccessToken()
 	{
-		$data = array(
-			'access_token' => 'adfs54s8br48nfd8h7t4m8',
-			'client_id' => 1,
-			'user_id' => 5,
-			'expires' => new \DateTime
-		);
+		$entity = $this->createEntity();
+		$this->storage->store($entity);
+		$this->storage->remove($entity->getAccessToken());
+		$stored = $this->storage->getValidAccessToken($entity->getAccessToken());
+		Assert::null($stored);
+	}
 
-		$exception = new \PDOException();
-		$exception->errorInfo = array(1452);
-
-		$selection = $this->mockista->create('Nette\Database\Table\Selection');
-		$scopeSelection = $this->mockista->create('Nette\Database\Table\Selection');
-		$connection = $this->mockista->create('Nette\Database\Connection');
-		$entity = $this->mockista->create('Drahak\OAuth2\Storage\AccessTokens\IAccessToken');
-
-		$this->selectionFactory->expects('table')->once()->with('oauth_access_token')->andReturn($selection);
-		$this->selectionFactory->expects('table')->once()->with('oauth_access_token_scope')->andReturn($scopeSelection);
-
-		$entity->expects('getAccessToken')->once()->andReturn($data['access_token']);
-		$entity->expects('getClientId')->once()->andReturn($data['client_id']);
-		$entity->expects('getUserId')->once()->andReturn($data['user_id']);
-		$entity->expects('getExpires')->once()->andReturn($data['expires']);
-		$entity->expects('getScope')->once()->andReturn(array('profile'));
-
-		$selection->expects('insert')->once()->with($data);
-		$selection->expects('getConnection')->once()->andReturn($connection);
-
-		$scopeSelection->expects('insert')
-			->once()
-			->with(array(
-				'access_token' => $data['access_token'],
-				'scope_name' => 'profile'
-			))
-			->andThrow($exception);
-
-		$connection->expects('beginTransaction')->once();
+	public function testThrowsInvalidScopeExceptionWhenInvalidScopeGiven()
+	{
+		$entity = $this->createEntity('5fcb1af9-d5cd-11', array('invalid_scope_access'));
 
 		Assert::throws(function() use($entity) {
 			$this->storage->store($entity);
 		}, 'Drahak\OAuth2\InvalidScopeException');
 	}
 
-	public function testRemoveAccessToken()
+	public function testGetValidAccessTokenEntityWithScope()
 	{
-		$token = '86af28s2d8g4re84fmh9gy6s8';
-		$selection = $this->mockista->create('Nette\Database\Table\Selection');
-		$selection->expects('where')->once()->with(array('access_token' => $token))->andReturn($selection);
-		$selection->expects('delete')->once()->andReturn($selection);
-
-		$this->selectionFactory->expects('table')->once()->with('oauth_access_token')->andReturn($selection);
-
-		$this->storage->remove($token);
+		$entity = $this->createEntity('5fcb1af9-d5cd-11', array('profile'));
+		$this->storage->store($entity);
+		$stored = $this->storage->getValidAccessToken($entity->getAccessToken());
+		Assert::true($stored instanceof IAccessToken);
+		Assert::equal($stored->getAccessToken(), $entity->getAccessToken());
+		Assert::equal($stored->getClientId(), $entity->getClientId());
+		Assert::equal($stored->getUserId(), $entity->getUserId());
+		Assert::equal($stored->getScope(), $entity->getScope());
 	}
 
-	public function testValidateAccessToken()
+	/**
+	 * Create test entity
+	 * @param string|null $userId
+	 * @param array $scope
+	 * @return AccessToken
+	 */
+	protected function createEntity($userId = NULL, $scope = array())
 	{
-		$token = '86af28s2d8g4re84fmh9gy6s8';
-		$row = array('profile' => 'asd5asd5a6as');
-		$accessToken = array(
-			'access_token' => $token,
-			'expires' => '26.2.2002 15:23',
-			'client_id' => 1,
-			'user_id' => 2
+		return new AccessToken(
+			hash('sha256', Nette\Utils\Strings::random()),
+			new \DateTime('20.1.2050'),
+			'd3a213ad-d142-11',
+			$userId,
+			$scope
 		);
-
-		$selection = $this->mockista->create('Nette\Database\Table\Selection');
-		$selection->expects('where')->once()->with(array('access_token' => $token))->andReturn($selection);
-		$selection->expects('where')->once()->andReturn($selection);
-		$selection->expects('fetch')->once()->andReturn($accessToken);
-
-		$selection->expects('select')->once()->with('scope_name')->andReturn($selection);
-		$selection->expects('fetchPairs')->once()->with('scope_name')->andReturn($row);
-
-		$this->selectionFactory->expects('table')->once()->with('oauth_access_token')->andReturn($selection);
-		$this->selectionFactory->expects('table')->once()->with('oauth_access_token_scope')->andReturn($selection);
-
-		$result = $this->storage->getValidAccessToken($token);
-		Assert::true($result instanceof IAccessToken);
-		Assert::equal($result->getAccessToken(), $accessToken['access_token']);
-		Assert::equal($result->getClientId(), $accessToken['client_id']);
-		Assert::equal($result->getUserId(), $accessToken['user_id']);
-		Assert::equal($result->getScope(), array_keys($row));
 	}
 
 }

@@ -5,7 +5,6 @@ use Drahak\OAuth2\Storage\Clients\IClientStorage;
 use Drahak\OAuth2\Storage\Clients\IClient;
 use Drahak\OAuth2\Storage\Clients\Client;
 use Nette\Database\SelectionFactory;
-use Nette\Database\Table\ActiveRow;
 use Nette\Object;
 
 /**
@@ -62,8 +61,8 @@ class ClientStorage extends Object implements IClientStorage
 	{
 		$result = $this->getTable()->getConnection()->query('
 			SELECT name
-			FROM oauth_client_role
-			RIGHT JOIN oauth_role AS r ON role_id = r.id AND name = ?
+			FROM oauth_client_grant
+			RIGHT JOIN oauth_grant AS g ON grant_id = g.id AND name = ?
 			WHERE client_id = ?
 		', $grantType, $clientId);
 		return (bool)$result->fetch();
