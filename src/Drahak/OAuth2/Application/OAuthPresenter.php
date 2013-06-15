@@ -4,14 +4,15 @@ namespace Drahak\OAuth2\Application;
 use Drahak\OAuth2\Grant\GrantContext;
 use Drahak\OAuth2\Grant\IGrant;
 use Drahak\OAuth2\Grant\InvalidGrantTypeException;
-use Drahak\OAuth2\InvalidScopeException;
+use Drahak\OAuth2\InvalidGrantException;
 use Drahak\OAuth2\InvalidStateException;
 use Drahak\OAuth2\OAuthException;
 use Drahak\OAuth2\Storage\Clients\IClient;
-use Drahak\OAuth2\Storage;
+use Drahak\OAuth2\Storage\AuthorizationCodes\AuthorizationCodeFacade;
 use Drahak\OAuth2\Storage\InvalidAuthorizationCodeException;
 use Drahak\OAuth2\Grant\GrantType;
 use Drahak\OAuth2\Storage\Clients\IClientStorage;
+use Drahak\OAuth2\Storage\TokenException;
 use Drahak\OAuth2\UnauthorizedClientException;
 use Drahak\OAuth2\UnsupportedResponseTypeException;
 use Nette\Application\Responses\JsonResponse;
@@ -31,7 +32,7 @@ class OAuthPresenter extends Presenter implements IOAuthPresenter
 	/** @var GrantContext */
 	private $grantContext;
 
-	/** @var Storage\AuthorizationCodeFacade */
+	/** @var AuthorizationCodeFacade */
 	protected $authorizationCode;
 
 	/** @var IClientStorage */
@@ -51,9 +52,9 @@ class OAuthPresenter extends Presenter implements IOAuthPresenter
 
 	/**
 	 * Inject token manager - authorization code
-	 * @param Storage\AuthorizationCodeFacade $authorizationCode
+	 * @param AuthorizationCodeFacade $authorizationCode
 	 */
-	public function injectAuthorizationCode(Storage\AuthorizationCodeFacade $authorizationCode)
+	public function injectAuthorizationCode(AuthorizationCodeFacade $authorizationCode)
 	{
 		$this->authorizationCode = $authorizationCode;
 	}
@@ -105,7 +106,7 @@ class OAuthPresenter extends Presenter implements IOAuthPresenter
 			'error' => $exception->getKey(),
 			'error_description' => $exception->getMessage()
 		);
-		$this->oauthResponse($error, $this->getParameter('redirect_uri'));
+		$this->oauthResponse($error, $this->getParameter('redirect_uri'), $exception->getCode());
 	}
 
 	/**
@@ -144,21 +145,17 @@ class OAuthPresenter extends Presenter implements IOAuthPresenter
 	 * @param string $responseType
 	 * @param string $redirectUrl
 	 * @param string|null $scope
-	 *
-	 * @throws InvalidScopeException
-	 * @throws UnauthorizedClientException
-	 * @throws UnsupportedResponseTypeException
 	 */
 	public function issueAuthorizationCode($responseType, $redirectUrl, $scope = NULL)
 	{
-		if ($responseType !== 'code') {
-			throw new UnsupportedResponseTypeException;
-		}
-		if (!$this->client->getId()) {
-			throw new UnauthorizedClientException;
-		}
-
 		try {
+			if ($responseType !== 'code') {
+				throw new UnsupportedResponseTypeException;
+			}
+			if (!$this->client->getId()) {
+				throw new UnauthorizedClientException;
+			}
+
 			$scope = array_filter(explode(',', str_replace(' ', ',', $scope)));
 			$code = $this->authorizationCode->create($this->client, $this->user->getId(), $scope);
 			$data = array(
@@ -167,6 +164,8 @@ class OAuthPresenter extends Presenter implements IOAuthPresenter
 			$this->oauthResponse($data, $redirectUrl);
 		} catch (OAuthException $e) {
 			$this->oauthError($e);
+		} catch (TokenException $e) {
+			$this->oauthError(new InvalidGrantException);
 		}
 	}
 
@@ -192,6 +191,8 @@ class OAuthPresenter extends Presenter implements IOAuthPresenter
 			$this->oauthResponse($response, $redirectUrl);
 		} catch (OAuthException $e) {
 			$this->oauthError($e);
+		} catch (TokenException $e) {
+			$this->oauthError(new InvalidGrantException);
 		}
 	}
 

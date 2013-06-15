@@ -100,7 +100,7 @@ class InvalidRequestException extends OAuthException
 
 	public function __construct($message = 'Invalid request parameters', \Exception $previous = NULL)
 	{
-		parent::__construct($message, NULL, $previous);
+		parent::__construct($message, 400, $previous);
 	}
 
 }
@@ -118,7 +118,7 @@ class UnsupportedResponseTypeException extends OAuthException
 
 	public function __construct($message = 'Grant type not supported', \Exception $previous = NULL)
 	{
-		parent::__construct($message, NULL, $previous);
+		parent::__construct($message, 400, $previous);
 	}
 
 }
@@ -136,7 +136,7 @@ class UnauthorizedClientException extends OAuthException
 
 	public function __construct($message = 'The grant type is not authorized for this client', \Exception $previous = NULL)
 	{
-		parent::__construct($message, NULL, $previous);
+		parent::__construct($message, 401, $previous);
 	}
 
 }
@@ -155,7 +155,26 @@ class InvalidScopeException extends OAuthException
 
 	public function __construct($message = 'Given scope does not exist', \Exception $previous = NULL)
 	{
-		parent::__construct($message, NULL, $previous);
+		parent::__construct($message, 400, $previous);
+	}
+
+}
+
+/**
+ * InvalidGrantException is thrown when provided authorization grant (authorization vode, resource owner credentials)
+ * or refresh token is invalid, expired, revoked, does not match redirect URI used in authorization request
+ * @package Drahak\OAuth2
+ * @author Drahomír Hanák
+ */
+class InvalidGrantException extends OAuthException
+{
+
+	/** @var string */
+	protected $key = 'invalid_grant';
+
+	public function __construct($message = 'Givent grant token is invalid or expired', \Exception $previous = NULL)
+	{
+		parent::__construct($message, 400, $previous);
 	}
 
 }
