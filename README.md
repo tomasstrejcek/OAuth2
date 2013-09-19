@@ -1,6 +1,6 @@
 OAuth2 Provider
 ===============
-This repository is being developed.
+This repository is being developed and it's highly unstable.
 
 Requirements
 ------------
