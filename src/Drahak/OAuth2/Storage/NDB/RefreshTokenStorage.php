@@ -4,6 +4,7 @@ namespace Drahak\OAuth2\Storage\NDB;
 use Drahak\OAuth2\Storage\RefreshTokens\IRefreshTokenStorage;
 use Drahak\OAuth2\Storage\RefreshTokens\IRefreshToken;
 use Drahak\OAuth2\Storage\RefreshTokens\RefreshToken;
+use Nette\Database\Context;
 use Nette\Database\SelectionFactory;
 use Nette\Database\SqlLiteral;
 use Nette\Object;
@@ -16,10 +17,10 @@ use Nette\Object;
 class RefreshTokenStorage extends Object implements IRefreshTokenStorage
 {
 
-	/** @var SelectionFactory */
+	/** @var Context */
 	private $selectionFactory;
 
-	public function __construct(SelectionFactory $selectionFactory)
+	public function __construct(Context $selectionFactory)
 	{
 		$this->selectionFactory = $selectionFactory;
 	}

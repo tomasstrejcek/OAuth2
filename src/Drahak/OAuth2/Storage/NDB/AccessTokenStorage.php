@@ -5,6 +5,7 @@ use Drahak\OAuth2\InvalidScopeException;
 use Drahak\OAuth2\Storage\AccessTokens\AccessToken;
 use Drahak\OAuth2\Storage\AccessTokens\IAccessTokenStorage;
 use Drahak\OAuth2\Storage\AccessTokens\IAccessToken;
+use Nette\Database\Context;
 use Nette\Database\SelectionFactory;
 use Nette\Database\SqlLiteral;
 use Nette\Database\Table\ActiveRow;
@@ -18,10 +19,10 @@ use Nette\Object;
 class AccessTokenStorage extends Object implements IAccessTokenStorage
 {
 
-	/** @var SelectionFactory */
+	/** @var Context */
 	private $selectionFactory;
 
-	public function __construct(SelectionFactory $selectionFactory)
+	public function __construct(Context $selectionFactory)
 	{
 		$this->selectionFactory = $selectionFactory;
 	}
