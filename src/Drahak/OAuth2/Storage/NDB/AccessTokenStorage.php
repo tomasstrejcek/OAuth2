@@ -20,11 +20,11 @@ class AccessTokenStorage extends Object implements IAccessTokenStorage
 {
 
 	/** @var Context */
-	private $selectionFactory;
+	private $db;
 
 	public function __construct(Context $selectionFactory)
 	{
-		$this->selectionFactory = $selectionFactory;
+		$this->db = $selectionFactory;
 	}
 
 	/**
@@ -33,7 +33,7 @@ class AccessTokenStorage extends Object implements IAccessTokenStorage
 	 */
 	protected function getTable()
 	{
-		return $this->selectionFactory->table('oauth_access_token');
+		return $this->db->table('oauth_access_token');
 	}
 
 	/**
@@ -42,7 +42,7 @@ class AccessTokenStorage extends Object implements IAccessTokenStorage
 	 */
 	protected function getScopeTable()
 	{
-		return $this->selectionFactory->table('oauth_access_token_scope');
+		return $this->db->table('oauth_access_token_scope');
 	}
 
 	/******************** IAccessTokenStorage ********************/
@@ -54,13 +54,13 @@ class AccessTokenStorage extends Object implements IAccessTokenStorage
 	 */
 	public function store(IAccessToken $accessToken)
 	{
-		$connection = $this->getTable()->getConnection();
+		$connection = $this->db;
 		$connection->beginTransaction();
 		$this->getTable()->insert(array(
 			'access_token' => $accessToken->getAccessToken(),
 			'client_id' => $accessToken->getClientId(),
 			'user_id' => $accessToken->getUserId(),
-			'expires' => $accessToken->getExpires()
+			'expires_at' => $accessToken->getExpires()
 		));
 
 		try {
@@ -99,7 +99,7 @@ class AccessTokenStorage extends Object implements IAccessTokenStorage
 		/** @var ActiveRow $row */
 		$row = $this->getTable()
 			->where(array('access_token' => $accessToken))
-			->where(new SqlLiteral('TIMEDIFF(expires, NOW()) >= 0'))
+			->where(new SqlLiteral('TIMEDIFF(expires_at, NOW()) >= 0'))
 			->fetch();
 
 		if (!$row) return NULL;
@@ -110,7 +110,7 @@ class AccessTokenStorage extends Object implements IAccessTokenStorage
 
 		return new AccessToken(
 			$row['access_token'],
-			new \DateTime($row['expires']),
+			new \DateTime($row['expires_at']),
 			$row['client_id'],
 			$row['user_id'],
 			array_keys($scopes)

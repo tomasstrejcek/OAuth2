@@ -46,7 +46,7 @@ class RefreshTokenStorage extends Object implements IRefreshTokenStorage
 			'refresh_token' => $refreshToken->getRefreshToken(),
 			'client_id' => $refreshToken->getClientId(),
 			'user_id' => $refreshToken->getUserId(),
-			'expires' => $refreshToken->getExpires()
+			'expires_at' => $refreshToken->getExpires()
 		));
 	}
 
@@ -68,14 +68,14 @@ class RefreshTokenStorage extends Object implements IRefreshTokenStorage
 	{
 		$row = $this->getTable()
 			->where(array('refresh_token' => $refreshToken))
-			->where(new SqlLiteral('TIMEDIFF(expires, NOW()) >= 0'))
+			->where(new SqlLiteral('TIMEDIFF(expires_at, NOW()) >= 0'))
 			->fetch();
 
 		if (!$row) return NULL;
 
 		return new RefreshToken(
 			$row['refresh_token'],
-			new \DateTime($row['expires']),
+			new \DateTime($row['expires_at']),
 			$row['client_id'],
 			$row['user_id']
 		);

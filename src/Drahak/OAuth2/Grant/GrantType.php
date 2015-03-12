@@ -37,7 +37,7 @@ abstract class GrantType extends Object implements IGrant
 	/** @var IInput */
 	protected $input;
 
-	/** @var User */
+	/** @var \App\Model\User\User */
 	protected $user;
 
 	/** @var IClient */

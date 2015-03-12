@@ -29,44 +29,17 @@ use Nette\Http\Url;
 class OAuthPresenter extends Presenter implements IOAuthPresenter
 {
 
-	/** @var GrantContext */
+	/** @var GrantContext @inject */
 	private $grantContext;
 
-	/** @var AuthorizationCodeFacade */
+	/** @var AuthorizationCodeFacade @inject */
 	protected $authorizationCode;
 
-	/** @var IClientStorage */
+	/** @var IClientStorage  @inject */
 	protected $clientStorage;
 
-	/** @var IClient */
+	/** @var IClient @inject */
 	protected $client;
-
-	/**
-	 * Inject grant strategy context
-	 * @param GrantContext $grantContext
-	 */
-	public function injectGrant(GrantContext $grantContext)
-	{
-		$this->grantContext = $grantContext;
-	}
-
-	/**
-	 * Inject token manager - authorization code
-	 * @param AuthorizationCodeFacade $authorizationCode
-	 */
-	public function injectAuthorizationCode(AuthorizationCodeFacade $authorizationCode)
-	{
-		$this->authorizationCode = $authorizationCode;
-	}
-
-	/**
-	 * Injet client storage
-	 * @param IClientStorage $clientStorage
-	 */
-	public function injectClientStorage(IClientStorage $clientStorage)
-	{
-		$this->clientStorage = $clientStorage;
-	}
 
 	/**
 	 * On presenter startup

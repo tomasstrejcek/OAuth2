@@ -32,6 +32,7 @@ abstract class ResourcePresenter extends Presenter implements IResourcePresenter
 
 	/**
 	 * Access token manager
+     * @inject
 	 * @param AccessToken $accessToken
 	 */
 	public function injectAccessToken(AccessToken $accessToken)

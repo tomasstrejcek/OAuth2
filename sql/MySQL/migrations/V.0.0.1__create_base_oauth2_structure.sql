@@ -1,13 +1,8 @@
 -- Application users
-CREATE TABLE oauth_user (
-  user_id       CHAR(36)      PRIMARY KEY,
-  username      VARCHAR(50)   NOT NULL,
-  password      CHAR(64)      NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- OAuth2 clients
 CREATE TABLE oauth_client (
-	client_id 		CHAR(36)		  PRIMARY KEY,
+	id 		CHAR(36)		  PRIMARY KEY,
 	name          VARCHAR(50)   NOT NULL,
 	secret		    CHAR(64)	    NOT NULL,
 	redirect_url	VARCHAR(255)	NOT NULL
@@ -21,52 +16,52 @@ CREATE TABLE oauth_scope (
 
 -- OAuth2 grant types
 CREATE TABLE oauth_grant (
-  grant_id 		  INT    		    PRIMARY KEY AUTO_INCREMENT,
+  id 		  INT    		    PRIMARY KEY AUTO_INCREMENT,
   name 		      VARCHAR(80) 	NOT NULL,
   description 	VARCHAR(255) 	NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- OAuth2 client to grant M:N connection table
 CREATE TABLE oauth_client_grant (
-  client_grant_id 	INT 	      PRIMARY KEY AUTO_INCREMENT,
+  id 	INT 	      PRIMARY KEY AUTO_INCREMENT,
   client_id 		    CHAR(36) 		NOT NULL,
   grant_id 		      INT 		    NOT NULL,
 
-  CONSTRAINT FOREIGN KEY (grant_id) REFERENCES oauth_grant (grant_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT FOREIGN KEY (client_id) REFERENCES oauth_client (client_id) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT FOREIGN KEY (grant_id) REFERENCES oauth_grant (id) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT FOREIGN KEY (client_id) REFERENCES oauth_client (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- OAuth2 access token table
 CREATE TABLE oauth_access_token (
   access_token    CHAR(64)    PRIMARY KEY,
   client_id       CHAR(36)    NOT NULL,
-  user_id         CHAR(36)    NULL,
+  user_id         INT(11)    NULL,
   expires_at      TIMESTAMP   NOT NULL,
 
-  CONSTRAINT FOREIGN KEY (user_id) REFERENCES oauth_user (user_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT FOREIGN KEY (client_id) REFERENCES oauth_client (client_id) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT FOREIGN KEY (user_id) REFERENCES client (id) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT FOREIGN KEY (client_id) REFERENCES oauth_client (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- OAuth2 authorization code table
 CREATE TABLE oauth_authorization_code (
   authorization_code  CHAR(64)    PRIMARY KEY,
   client_id           CHAR(36)    NOT NULL,
-  user_id             CHAR(36)    NOT NULL,
+  user_id             INT(11)    NOT NULL,
   expires_at          TIMESTAMP   NOT NULL,
 
-  CONSTRAINT FOREIGN KEY (user_id) REFERENCES oauth_user (user_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT FOREIGN KEY (client_id) REFERENCES oauth_client (client_id) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT FOREIGN KEY (user_id) REFERENCES client (id) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT FOREIGN KEY (client_id) REFERENCES oauth_client (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- OAuth2 refresh token table
 CREATE TABLE oauth_refresh_token (
   refresh_token       CHAR(64)    PRIMARY KEY,
   client_id           CHAR(36)    NOT NULL,
-  user_id             CHAR(36)    NULL,
+  user_id             INT(11)    NULL,
   expires_at          TIMESTAMP   NOT NULL,
 
-  CONSTRAINT FOREIGN KEY (user_id) REFERENCES oauth_user (user_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT FOREIGN KEY (client_id) REFERENCES oauth_client (client_id) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT FOREIGN KEY (user_id) REFERENCES client (id) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT FOREIGN KEY (client_id) REFERENCES oauth_client (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- OAuth2 scope to authorization code connection table

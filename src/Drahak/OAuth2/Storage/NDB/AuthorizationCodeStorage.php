@@ -20,11 +20,11 @@ class AuthorizationCodeStorage extends Object implements IAuthorizationCodeStora
 {
 
 	/** @var Context */
-	private $selectionFactory;
+	private $db;
 
 	public function __construct(Context $selectionFactory)
 	{
-		$this->selectionFactory = $selectionFactory;
+		$this->db = $selectionFactory;
 	}
 
 	/**
@@ -33,7 +33,7 @@ class AuthorizationCodeStorage extends Object implements IAuthorizationCodeStora
 	 */
 	protected function getTable()
 	{
-		return $this->selectionFactory->table('oauth_authorization_code');
+		return $this->db->table('oauth_authorization_code');
 	}
 
 	/**
@@ -42,7 +42,7 @@ class AuthorizationCodeStorage extends Object implements IAuthorizationCodeStora
 	 */
 	protected function getScopeTable()
 	{
-		return $this->selectionFactory->table('oauth_authorization_code_scope');
+		return $this->db->table('oauth_authorization_code_scope');
 	}
 
 	/******************** IAuthorizationCodeStorage ********************/
@@ -59,7 +59,7 @@ class AuthorizationCodeStorage extends Object implements IAuthorizationCodeStora
 			'authorization_code' => $authorizationCode->getAuthorizationCode(),
 			'client_id' => $authorizationCode->getClientId(),
 			'user_id' => $authorizationCode->getUserId(),
-			'expires' => $authorizationCode->getExpires()
+			'expires_at' => $authorizationCode->getExpires()
 		));
 
 		$connection = $this->getTable()->getConnection();
@@ -101,7 +101,7 @@ class AuthorizationCodeStorage extends Object implements IAuthorizationCodeStora
 		/** @var ActiveRow $row */
 		$row = $this->getTable()
 			->where(array('authorization_code' => $authorizationCode))
-			->where(new SqlLiteral('TIMEDIFF(expires, NOW()) >= 0'))
+			->where(new SqlLiteral('TIMEDIFF(expires_at, NOW()) >= 0'))
 			->fetch();
 
 		if (!$row) return NULL;
@@ -112,7 +112,7 @@ class AuthorizationCodeStorage extends Object implements IAuthorizationCodeStora
 
 		return new AuthorizationCode(
 			$row['authorization_code'],
-			new \DateTime($row['expires']),
+			new \DateTime($row['expires_at']),
 			$row['client_id'],
 			$row['user_id'],
 			array_keys($scopes)

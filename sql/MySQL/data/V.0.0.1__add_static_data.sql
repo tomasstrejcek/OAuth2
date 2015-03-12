@@ -1,5 +1,5 @@
 -- Create sample client
-INSERT INTO oauth_client (client_id, secret, redirect_url) VALUES
+INSERT INTO oauth_client (id, secret, redirect_url) VALUES
 ('b6daa7e9-ebb7-4b97-9f4c-61615f2de94d',	'a2a2f11ece9c35f117936fc44529a174e85ca68005b7b0d1d0d2b5842d907f12',	'http://localhost/OAuth2/');
 
 -- Base client roles

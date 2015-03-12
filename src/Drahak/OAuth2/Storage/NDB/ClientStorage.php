@@ -17,11 +17,11 @@ class ClientStorage extends Object implements IClientStorage
 {
 
 	/** @var Context */
-	private $selectionFactory;
+	private $db;
 
 	public function __construct(Context $selectionFactory)
 	{
-		$this->selectionFactory = $selectionFactory;
+		$this->db = $selectionFactory;
 	}
 
 	/**
@@ -30,7 +30,7 @@ class ClientStorage extends Object implements IClientStorage
 	 */
 	protected function getTable()
 	{
-		return $this->selectionFactory->table('oauth_client');
+		return $this->db->table('oauth_client');
 	}
 
 	/**
@@ -60,10 +60,10 @@ class ClientStorage extends Object implements IClientStorage
 	 */
 	public function canUseGrantType($clientId, $grantType)
 	{
-		$result = $this->getTable()->getConnection()->query('
-			SELECT name
-			FROM oauth_client_grant
-			RIGHT JOIN oauth_grant AS g ON grant_id = g.id AND name = ?
+		$result = $this->db->query('
+			SELECT g.name
+			FROM oauth_client_grant ocg
+			RIGHT JOIN oauth_grant g ON ocg.grant_id = g.id AND name = ?
 			WHERE client_id = ?
 		', $grantType, $clientId);
 		return (bool)$result->fetch();
